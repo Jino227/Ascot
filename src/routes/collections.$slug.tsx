@@ -11,15 +11,16 @@ const qFor = (slug: string) =>
   });
 
 export const Route = createFileRoute("/collections/$slug")({
-  head: ({ loaderData }) => {
-    const name = loaderData?.collection?.name ?? "Collection";
+  head: ({ loaderData }: { loaderData?: { collection: { name: string; description: string | null; cover_image: string | null } } }) => {
+    const c = loaderData?.collection;
+    const name = c?.name ?? "Collection";
     return {
       meta: [
         { title: `${name} — Maison·Loom` },
-        { name: "description", content: loaderData?.collection?.description ?? `Explore the ${name} collection by Maison·Loom.` },
+        { name: "description", content: c?.description ?? `Explore the ${name} collection by Maison·Loom.` },
         { property: "og:title", content: `${name} — Maison·Loom` },
-        { property: "og:description", content: loaderData?.collection?.description ?? `Explore the ${name} collection.` },
-        ...(loaderData?.collection?.cover_image ? [{ property: "og:image", content: loaderData.collection.cover_image }] : []),
+        { property: "og:description", content: c?.description ?? `Explore the ${name} collection.` },
+        ...(c?.cover_image ? [{ property: "og:image", content: c.cover_image }] : []),
       ],
     };
   },
