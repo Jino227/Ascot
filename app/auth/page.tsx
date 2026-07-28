@@ -17,22 +17,27 @@ export default function AuthPage() {
   const [password, setPassword] = useState("");
 
   useEffect(() => { document.title = "Sign in — Ascot Fashions"; }, []);
-  useEffect(() => { if (user) router.replace("/private-collections"); }, [user, router]);
+
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data } = await supabase.from("clients").select("is_active").eq("user_id", user.id).maybeSingle();
+      if (data && !data.is_active) {
+        toast.error("Your account has been disabled.");
+        supabase.auth.signOut();
+        router.refresh();
+      } else {
+        router.replace("/private-collections");
+      }
+    })();
+  }, [user, router]);
 
   async function signIn(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
-    if (error) toast.error(error.message); else toast.success("Welcome back.");
-  }
-
-  async function google() {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: window.location.origin },
-    });
-    if (error) toast.error(error.message ?? "Google sign-in failed");
+    if (error) toast.error(error.message);
   }
 
   return (
@@ -40,24 +45,11 @@ export default function AuthPage() {
       <div className="w-full max-w-md border border-border/60 bg-card p-8">
         <h1 className="font-display text-3xl">Sign in</h1>
         <p className="mt-2 text-sm text-muted-foreground">Welcome back to Ascot Fashions.</p>
-
-        <Button onClick={google} variant="outline" className="mt-6 w-full rounded-none">
-          Continue with Google
-        </Button>
-        <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-widest text-muted-foreground">
-          <div className="h-px flex-1 bg-border" /> or <div className="h-px flex-1 bg-border" />
-        </div>
-
-        <form onSubmit={signIn} className="space-y-4">
+        <form onSubmit={signIn} className="mt-6 space-y-4">
           <div><Label>Email</Label><Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="mt-2 rounded-none" /></div>
           <div><Label>Password</Label><Input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="mt-2 rounded-none" /></div>
-          <Button type="submit" disabled={loading} className="w-full rounded-none">Sign in</Button>
+          <Button type="submit" disabled={loading} className="w-full rounded-none">{loading ? "Signing in…" : "Sign in"}</Button>
         </form>
-
-        <p className="mt-6 text-center text-xs text-muted-foreground">
-          No account?{" "}
-          <a href="/register" className="text-accent hover:underline">Register here</a>
-        </p>
       </div>
     </div>
   );

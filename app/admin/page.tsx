@@ -11,6 +11,8 @@ export default function AdminDash() {
         { href: "/admin/videos", label: "Videos", desc: "Upload and manage video gallery." },
         { href: "/admin/collections", label: "Collections", desc: "Create, edit, and reorder collections." },
         { href: "/admin/products", label: "Products", desc: "Manage products and their images." },
+        { href: "/admin/clients", label: "Client access", desc: "Create client profiles and assign private collections." },
+        { href: "/admin/journey", label: "Journey", desc: "Add, reorder, publish, and edit the manufacturing journey." },
         { href: "/admin/content", label: "Website content", desc: "Edit hero, about, and other sections." },
         { href: "/admin/users", label: "Users", desc: "View users and promote admins." },
         { href: "/admin/inquiries", label: "Inquiries", desc: "Read and triage incoming inquiries." },

@@ -3,12 +3,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { getAllCollectionsAuthed } from "@/lib/actions";
 import { Reveal } from "@/components/layout/Reveal";
 import { Badge } from "@/components/ui/badge";
 import { Crown, ArrowRight } from "lucide-react";
+import { toast } from "sonner";
 
 const DEMO_COLLECTIONS = [
   { id: "d1", name: "The Vault", slug: "the-vault", description: "Exclusive archive pieces from past seasons.", cover_image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=900&q=80", is_public: false },
@@ -18,12 +21,25 @@ const DEMO_COLLECTIONS = [
 
 export default function PrivateCollections() {
   const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
   useEffect(() => { document.title = "Member Collections — Ascot Fashions"; }, []);
 
   const { data: collectionsData = [] } = useQuery({
     queryKey: ["collections", "authed"],
-    queryFn: () => getAllCollectionsAuthed(user!.id),
+    queryFn: async () => {
+      try {
+        return await getAllCollectionsAuthed(user!.id);
+      } catch (e: any) {
+        if (e.message?.includes("Account disabled")) {
+          toast.error("Your account has been disabled.");
+          await supabase.auth.signOut();
+          router.push("/auth");
+        }
+        throw e;
+      }
+    },
     enabled: !!user,
+    retry: false,
   });
 
   if (authLoading) return <div className="container-x py-20 text-muted-foreground">Loading…</div>;
@@ -51,7 +67,7 @@ export default function PrivateCollections() {
       <div className="mt-16 grid gap-10 md:grid-cols-2 lg:grid-cols-3">
         {collections.map((c: any, i: number) => (
           <motion.div key={c.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: i * 0.08 }} whileHover={{ y: -4 }}>
-            <Link href="/" className="group block">
+            <Link href={`/collections/${c.slug}`} className="group block">
               <div className="aspect-[4/5] overflow-hidden bg-muted relative">
                 {c.cover_image ? (
                   <motion.img src={c.cover_image} alt={c.name} whileHover={{ scale: 1.05 }} transition={{ duration: 0.6 }} className="h-full w-full object-cover" />

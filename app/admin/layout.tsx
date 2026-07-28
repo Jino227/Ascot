@@ -14,6 +14,8 @@ const tabs = [
   { href: "/admin/videos", label: "Videos" },
   { href: "/admin/collections", label: "Collections" },
   { href: "/admin/products", label: "Products" },
+  { href: "/admin/clients", label: "Client access" },
+  { href: "/admin/journey", label: "Journey" },
   { href: "/admin/content", label: "Content" },
   { href: "/admin/users", label: "Users" },
   { href: "/admin/inquiries", label: "Inquiries" },

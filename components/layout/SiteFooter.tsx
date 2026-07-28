@@ -38,7 +38,7 @@ export function SiteFooter() {
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}>
           <div className="text-xs uppercase tracking-widest text-muted-foreground">Explore</div>
           <ul className="mt-5 space-y-3 text-sm">
-            {[{ href: "/", label: "Home" }, { href: "/about", label: "About" }, { href: "/contact", label: "Contact" }].map((l) => (
+            {[{ href: "/", label: "Home" }, { href: "/about", label: "About" }, { href: "/journey", label: "Our Journey" }, { href: "/collections", label: "Collections" }, { href: "/contact", label: "Contact" }].map((l) => (
               <li key={l.href}><Link href={l.href} className="text-muted-foreground hover:text-accent transition-colors">{l.label}</Link></li>
             ))}
           </ul>
