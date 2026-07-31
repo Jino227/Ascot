@@ -145,6 +145,116 @@ export async function getAllCollectionsWithProducts() {
   return (collections ?? []).map((c) => ({ ...c, products: byColl[c.id] ?? [] }));
 }
 
+export async function getPublicDesigns(limit?: number) {
+  const q = supabaseAdmin
+    .from("designs")
+    .select("id, url, alt, is_private, display_order, created_at")
+    .eq("is_private", false)
+    .order("display_order")
+    .order("created_at");
+  const { data } = limit ? await q.limit(limit) : await q;
+  return data ?? [];
+}
+
+export async function getDesignsForUser(userId: string) {
+  const { data } = await supabaseAdmin
+    .from("designs")
+    .select("id, url, alt, is_private, display_order, created_at")
+    .order("display_order")
+    .order("created_at");
+  return data ?? [];
+}
+
+export async function getDesignsAdmin(userId: string) {
+  await assertAdmin(userId);
+  const { data } = await supabaseAdmin
+    .from("designs")
+    .select("*")
+    .order("display_order")
+    .order("created_at");
+  return data ?? [];
+}
+
+export async function upsertDesign(userId: string, data: {
+  id?: string; url: string; alt?: string; is_private: boolean; display_order: number;
+}) {
+  await assertAdmin(userId);
+  const parsed = z.object({
+    id: z.string().uuid().optional(),
+    url: z.string().min(1).max(800),
+    alt: z.string().max(400).optional().nullable(),
+    is_private: z.boolean(),
+    display_order: z.number().int().min(0).default(0),
+  }).parse(data);
+  
+  const { error } = parsed.id
+    ? await supabaseAdmin.from("designs").update({ ...parsed, uploaded_by: userId }).eq("id", parsed.id)
+    : await supabaseAdmin.from("designs").insert({ ...parsed, uploaded_by: userId });
+    
+  if (error) throw new Error(error.message);
+  return { ok: true };
+}
+
+export async function deleteDesign(userId: string, id: string) {
+  await assertAdmin(userId);
+  const { error } = await supabaseAdmin.from("designs").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+  return { ok: true };
+}
+
+export async function uploadDesignImage(userId: string, formData: FormData) {
+  await assertAdmin(userId);
+  const file = formData.get("file") as File | null;
+  if (!file) throw new Error("No file provided");
+  const ext = file.name.split(".").pop() ?? "jpg";
+  const path = `designs/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+  const buffer = new Uint8Array(await file.arrayBuffer());
+  const { error } = await supabaseAdmin.storage
+    .from("media")
+    .upload(path, buffer, { contentType: file.type, upsert: false });
+  if (error) throw new Error(error.message);
+  const { data: urlData } = supabaseAdmin.storage.from("media").getPublicUrl(path);
+  return { ok: true, url: urlData.publicUrl };
+}
+
+export async function getPublicDesignImages(limit?: number) {
+  const q = supabaseAdmin
+    .from("collection_images")
+    .select("id, url, alt, display_order, collection_id, collections!inner(name, slug, is_public)")
+    .eq("is_private", false)
+    .order("display_order");
+  const { data } = limit ? await q.limit(limit) : await q;
+  return ((data ?? []) as any[]).filter((img: any) => img.collections?.is_public === true);
+}
+
+export async function getDesignImagesForUser(userId: string) {
+  const { isAdmin } = await checkIsAdmin(userId);
+  if (isAdmin) {
+    const { data } = await supabaseAdmin
+      .from("collection_images")
+      .select("id, url, alt, is_private, display_order, collection_id, collections!inner(name, slug, is_public)")
+      .order("display_order");
+    return data ?? [];
+  }
+  const { data: clientData } = await supabaseAdmin
+    .from("clients").select("id").eq("user_id", userId).eq("is_active", true).maybeSingle();
+  if (clientData) {
+    const { data: assigned } = await supabaseAdmin
+      .from("collection_clients").select("collection_id").eq("client_id", clientData.id);
+    const assignedIds = new Set((assigned ?? []).map((a: any) => a.collection_id));
+    const { data } = await supabaseAdmin
+      .from("collection_images")
+      .select("id, url, alt, is_private, display_order, collection_id, collections!inner(name, slug, is_public)")
+      .order("display_order");
+    return ((data ?? []) as any[]).filter((img: any) => {
+      if (!img.collections?.is_public && !assignedIds.has(img.collection_id)) return false;
+      if (img.is_private && !assignedIds.has(img.collection_id)) return false;
+      return true;
+    });
+  }
+  return getPublicDesignImages();
+}
+
 export async function getAllProductsWithImages() {
   const { data } = await supabaseAdmin
     .from("products").select("*, product_images(*)").order("display_order");
@@ -280,6 +390,21 @@ export async function getJourneyStepsAdmin(userId: string) {
   await assertAdmin(userId);
   const { data } = await supabaseAdmin.from("journey_steps").select("*").order("step_order");
   return data ?? [];
+}
+
+export async function uploadJourneyImage(userId: string, formData: FormData) {
+  await assertAdmin(userId);
+  const file = formData.get("file") as File | null;
+  if (!file) throw new Error("No file provided");
+  const ext = file.name.split(".").pop() ?? "jpg";
+  const path = `journey/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+  const buffer = new Uint8Array(await file.arrayBuffer());
+  const { error } = await supabaseAdmin.storage
+    .from("media")
+    .upload(path, buffer, { contentType: file.type, upsert: false });
+  if (error) throw new Error(error.message);
+  const { data: urlData } = supabaseAdmin.storage.from("media").getPublicUrl(path);
+  return { ok: true, url: urlData.publicUrl };
 }
 
 export async function upsertJourneyStep(userId: string, data: {
@@ -658,6 +783,27 @@ export async function deleteVideo(userId: string, id: string) {
   return { ok: true };
 }
 
+/* Hero Media Upload */
+export async function uploadHeroMedia(userId: string, formData: FormData) {
+  await assertAdmin(userId);
+  const file = formData.get("file") as File | null;
+  if (!file) throw new Error("No file provided");
+
+  const ext = file.name.split(".").pop() ?? "bin";
+  const path = `hero/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = new Uint8Array(arrayBuffer);
+
+  const { error } = await supabaseAdmin.storage
+    .from("media")
+    .upload(path, buffer, { contentType: file.type, upsert: false });
+  if (error) throw new Error(error.message);
+
+  const { data: urlData } = supabaseAdmin.storage.from("media").getPublicUrl(path);
+  return { ok: true, url: urlData.publicUrl };
+}
+
 /* Activity log */
 export async function logActivity(userId: string, action: string, entity?: string, entityId?: string, metadata?: any) {
   await supabaseAdmin.from("activity_logs").insert({
@@ -672,3 +818,68 @@ export async function getActivityLogs(userId: string) {
     .order("created_at", { ascending: false }).limit(100);
   return data ?? [];
 }
+
+/* Celebrity Showcase */
+export async function getPublicCelebrities() {
+  const { data } = await supabaseAdmin
+    .from("celebrity_showcase")
+    .select("*")
+    .eq("is_published", true)
+    .order("display_order")
+    .order("created_at", { ascending: false });
+  return data ?? [];
+}
+
+export async function getCelebritiesAdmin(userId: string) {
+  await assertAdmin(userId);
+  const { data } = await supabaseAdmin
+    .from("celebrity_showcase")
+    .select("*")
+    .order("display_order")
+    .order("created_at", { ascending: false });
+  return data ?? [];
+}
+
+export async function uploadCelebrityImage(userId: string, formData: FormData) {
+  await assertAdmin(userId);
+  const file = formData.get("file") as File | null;
+  if (!file) throw new Error("No file provided");
+  const ext = file.name.split(".").pop() ?? "jpg";
+  const path = `celebrities/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+  const buffer = new Uint8Array(await file.arrayBuffer());
+  const { error } = await supabaseAdmin.storage
+    .from("media")
+    .upload(path, buffer, { contentType: file.type, upsert: false });
+  if (error) throw new Error(error.message);
+  const { data: urlData } = supabaseAdmin.storage.from("media").getPublicUrl(path);
+  return { ok: true, url: urlData.publicUrl };
+}
+
+export async function upsertCelebrity(userId: string, data: {
+  id?: string; name: string; description?: string; image: string; display_order: number; is_published: boolean;
+}) {
+  await assertAdmin(userId);
+  const parsed = z.object({
+    id: z.string().uuid().optional(),
+    name: z.string().min(1).max(200),
+    description: z.string().max(800).optional().nullable(),
+    image: z.string().url().max(800),
+    display_order: z.number().int().default(0),
+    is_published: z.boolean().default(true),
+  }).parse(data);
+
+  const { error } = parsed.id
+    ? await supabaseAdmin.from("celebrity_showcase").update(parsed).eq("id", parsed.id)
+    : await supabaseAdmin.from("celebrity_showcase").insert(parsed);
+    
+  if (error) throw new Error(error.message);
+  return { ok: true };
+}
+
+export async function deleteCelebrity(userId: string, id: string) {
+  await assertAdmin(userId);
+  const { error } = await supabaseAdmin.from("celebrity_showcase").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+  return { ok: true };
+}
+

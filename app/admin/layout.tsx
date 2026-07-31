@@ -9,13 +9,12 @@ import { checkIsAdmin } from "@/lib/actions";
 
 const tabs = [
   { href: "/admin", label: "Overview" },
-  { href: "/admin/works", label: "Works" },
-  { href: "/admin/team", label: "Company Gallery" },
-  { href: "/admin/videos", label: "Videos" },
-  { href: "/admin/collections", label: "Collections" },
-  { href: "/admin/products", label: "Products" },
-  { href: "/admin/clients", label: "Client access" },
+  // { href: "/admin/works", label: "Works" },
+  // { href: "/admin/team", label: "Company Gallery" },
+  // { href: "/admin/videos", label: "Videos" },
+  { href: "/admin/designs", label: "Designs" },
   { href: "/admin/journey", label: "Journey" },
+  { href: "/admin/celebrities", label: "Celebrities" },
   { href: "/admin/content", label: "Content" },
   { href: "/admin/users", label: "Users" },
   { href: "/admin/inquiries", label: "Inquiries" },
@@ -32,10 +31,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     enabled: !!user,
   });
 
-  if (authLoading || isLoading) return <div className="container-x py-20 text-muted-foreground">Checking permissions…</div>;
+  if (authLoading || isLoading) return <div className="container-x pt-32 py-20 text-muted-foreground">Checking permissions…</div>;
   if (!user) {
     return (
-      <div className="container-x py-32 text-center">
+      <div className="container-x pt-32 py-32 text-center">
         <h1 className="font-display text-4xl">Sign in required</h1>
         <p className="mt-4 text-muted-foreground"><Link href="/auth" className="text-accent underline underline-offset-4">Sign in</Link> to access admin.</p>
       </div>
@@ -43,7 +42,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
   if (!data?.isAdmin) {
     return (
-      <div className="container-x py-32 text-center">
+      <div className="container-x pt-32 py-32 text-center">
         <h1 className="font-display text-4xl">Admin access required</h1>
         <p className="mt-4 text-muted-foreground">Your account doesn't have admin privileges.</p>
       </div>
@@ -51,7 +50,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="container-x py-12">
+    <div className="container-x pt-28 pb-12">
       <h1 className="font-display text-4xl">Admin</h1>
       <nav className="mt-6 flex flex-wrap gap-1 border-b border-border/60">
         {tabs.map((t) => {
