@@ -132,6 +132,17 @@
   ::-webkit-scrollbar-track { background: var(--ink); }
   ::-webkit-scrollbar-thumb { background: color-mix(in oklab, var(--accent) 40%, var(--espresso)); border-radius: 5px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  /* ── Autofill Dark Override (Prevents browser white inputs on autofill) ── */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active,
+  textarea:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #161210 inset !important;
+    -webkit-text-fill-color: #f2e9dc !important;
+    caret-color: #f2e9dc !important;
+  }
 }
 
 @layer utilities {

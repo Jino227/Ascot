@@ -7,14 +7,18 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { getPublicDesigns, getDesignsForUser } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
-import { Lock, X, Crown, ArrowRight } from "lucide-react";
+import { Lock, X, Crown, ArrowRight, Eye, Sparkles } from "lucide-react";
 import { TextReveal } from "@/components/layout/TextReveal";
+import { Tilt3DCard } from "@/components/layout/Tilt3DCard";
+import { Particles } from "@/components/layout/Particles";
+import { Magnetic } from "@/components/layout/Magnetic";
+import { SvgMorphDivider } from "@/components/layout/SvgMorphDivider";
 
 export default function DesignsPage() {
   const { user, loading: authLoading } = useAuth();
   const [lightbox, setLightbox] = useState<string | null>(null);
 
-  useEffect(() => { document.title = "Designs — Ascot Fashions"; }, []);
+  useEffect(() => { document.title = "Designs — Ascotex Fashions"; }, []);
 
   const { data: publicDesigns = [], isLoading: loadingPublic } = useQuery({
     queryKey: ["designs", "public"],
@@ -40,52 +44,58 @@ export default function DesignsPage() {
   }, []);
 
   return (
-    <main>
-      {/* ── Page header ── */}
-      <section className="container-x pt-28 pb-16 md:pt-40 md:pb-20">
+    <main className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
+      {/* ── Page Header ── */}
+      <section className="relative container-x pt-32 pb-14 md:pt-44 md:pb-20 overflow-hidden">
+        <Particles count={40} className="opacity-50" />
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-          <p className="text-xs uppercase tracking-[0.4em] text-accent/80">The Portfolio</p>
-          <h1 className="mt-5 font-display text-5xl md:text-7xl leading-[1.02]">
+          <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.4em] text-gold font-medium mb-3">
+            <Sparkles className="h-3.5 w-3.5 text-gold" /> The Portfolio
+          </p>
+          <div className="font-script text-3xl md:text-4xl text-champagne/90 italic mb-2">Curated Silhouettes & Embroidery</div>
+          <h1 className="font-display text-5xl md:text-7xl leading-[1.02]">
             <TextReveal text="Designs & Collections" />
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
+          <p className="mt-6 max-w-xl text-base md:text-lg leading-relaxed text-muted-foreground font-light">
             {user
-              ? "Your full library — public designs and exclusive pieces."
-              : "Public designs visible to all. Sign in to unlock your exclusive collection."}
+              ? "Your full library — public designs and exclusive private pieces."
+              : "Public designs visible to all. Sign in to unlock your exclusive private collection."}
           </p>
         </motion.div>
       </section>
 
+      <SvgMorphDivider />
+
       {isLoading ? (
-        <div className="container-x py-24 text-muted-foreground text-sm">Loading designs…</div>
+        <div className="container-x py-24 text-muted-foreground text-sm font-light">Loading designs…</div>
       ) : (
         <>
-          {/* ── Public images ── */}
+          {/* ── Public Images Masonry ── */}
           {publicImages.length > 0 && (
-            <section className="container-x pb-20 md:pb-28">
-              <div className="mb-10 flex items-end justify-between">
+            <section className="container-x py-12 pb-24 md:pb-32">
+              <div className="mb-12 flex items-end justify-between border-b border-border/40 pb-4">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.35em] text-accent/70">Public</p>
-                  <h2 className="mt-2 font-display text-3xl md:text-4xl">Our designs</h2>
+                  <p className="text-xs uppercase tracking-[0.35em] text-gold font-medium">Public Collection</p>
+                  <h2 className="mt-1 font-display text-3xl md:text-4xl">Atelier Creations</h2>
                 </div>
-                <span className="text-xs text-muted-foreground">{publicImages.length} pieces</span>
+                <span className="text-xs tracking-wider text-muted-foreground uppercase">{publicImages.length} Pieces</span>
               </div>
               <ImageMasonry images={publicImages} onOpen={setLightbox} />
             </section>
           )}
 
-          {/* ── Private images (logged-in users) ── */}
+          {/* ── Private Images (Logged-in Users) ── */}
           {user && privateImages.length > 0 && (
-            <section className="bg-secondary/30 py-20 md:py-28">
+            <section className="relative bg-secondary/30 py-20 md:py-32 border-t border-border/30">
               <div className="container-x">
-                <div className="mb-10 flex items-end justify-between">
+                <div className="mb-12 flex items-end justify-between border-b border-gold/30 pb-4">
                   <div>
-                    <p className="flex items-center gap-2 text-xs uppercase tracking-[0.35em] text-amber-600/80">
-                      <Crown className="h-3.5 w-3.5" /> Exclusive
+                    <p className="flex items-center gap-2 text-xs uppercase tracking-[0.35em] text-gold font-medium">
+                      <Crown className="h-4 w-4 text-gold" /> Exclusive Access
                     </p>
-                    <h2 className="mt-2 font-display text-3xl md:text-4xl">Private collection</h2>
+                    <h2 className="mt-1 font-display text-3xl md:text-4xl text-gradient-gold">Private Collection</h2>
                   </div>
-                  <span className="text-xs text-muted-foreground">{privateImages.length} pieces</span>
+                  <span className="text-xs tracking-wider text-gold/80 uppercase">{privateImages.length} Private Pieces</span>
                 </div>
                 <ImageMasonry images={privateImages} onOpen={setLightbox} premium />
               </div>
@@ -93,57 +103,62 @@ export default function DesignsPage() {
           )}
 
           {images.length === 0 && (
-            <div className="container-x py-32 text-center text-muted-foreground">No designs published yet.</div>
+            <div className="container-x py-32 text-center text-muted-foreground font-light">No designs published yet.</div>
           )}
 
           {/* ── Sign-in CTA for unauthenticated users ── */}
           {!user && !authLoading && (
-            <section className="relative py-28 overflow-hidden bg-grain">
+            <section className="relative py-32 overflow-hidden bg-grain border-t border-border/30">
               <div className="absolute inset-0 -z-10 bg-gradient-to-br from-ink via-espresso to-ink" />
-              {publicImages[0] && (
-                <div
-                  className="absolute inset-0 -z-10 opacity-25"
-                  style={{ backgroundImage: `url(${publicImages[0].url})`, backgroundSize: "cover", backgroundPosition: "center", filter: "blur(20px)" }}
-                />
-              )}
+              <Particles count={50} className="opacity-60" />
+              
               <div className="container-x relative text-center max-w-2xl mx-auto">
-                <Lock className="mx-auto h-10 w-10 text-accent/70 mb-6" />
-                <p className="text-xs uppercase tracking-[0.4em] text-accent/70">Members only</p>
-                <h2 className="mt-5 font-display text-4xl md:text-5xl text-foreground leading-tight">
-                  Unlock premium designs &amp; collections
+                <div className="w-16 h-16 rounded-full bg-gold/10 border border-gold/40 flex items-center justify-center mx-auto mb-6">
+                  <Lock className="h-7 w-7 text-gold" />
+                </div>
+                <p className="text-xs uppercase tracking-[0.4em] text-gold font-medium">Members Only</p>
+                <h2 className="mt-4 font-display text-4xl md:text-6xl text-foreground leading-tight">
+                  Unlock Premium Private Designs
                 </h2>
-                <p className="mt-6 text-lg text-foreground/60 leading-relaxed">
-                  Sign in to access exclusive designs and private pieces curated for your account.
+                <p className="mt-6 text-base md:text-lg text-foreground/70 leading-relaxed font-light">
+                  Sign in to access exclusive designs, bespoke fitting options, and private pieces curated for your account.
                 </p>
-                <div className="mt-10 flex flex-wrap gap-4 justify-center">
-                  <Button asChild size="lg" className="rounded-none bg-accent text-accent-foreground hover:bg-accent/90 text-sm uppercase tracking-[0.15em] px-8 shadow-[0_0_30px_rgba(212,175,55,0.3)]">
+                <Magnetic className="mt-10 inline-block">
+                  <Button asChild size="lg" className="rounded-none bg-accent text-accent-foreground hover:bg-accent/90 text-xs uppercase tracking-[0.2em] px-10 py-6 h-auto shadow-[0_0_30px_rgba(212,175,55,0.35)]">
                     <Link href="/auth">Sign in <ArrowRight className="ml-2 h-4 w-4" /></Link>
                   </Button>
-                </div>
+                </Magnetic>
               </div>
             </section>
           )}
         </>
       )}
 
-      {/* ── Lightbox ── */}
+      {/* ── Glassmorphic Lightbox ── */}
       <AnimatePresence>
         {lightbox && (
           <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/92 p-4"
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/92 backdrop-blur-md p-4 cursor-zoom-out"
             onClick={() => setLightbox(null)}
           >
-            <button onClick={() => setLightbox(null)}
-              className="absolute top-5 right-5 rounded-full bg-white/10 p-2 text-white hover:bg-white/20 transition">
-              <X className="h-5 w-5" />
+            <button
+              onClick={() => setLightbox(null)}
+              className="absolute top-6 right-6 rounded-full bg-black/60 p-3 text-white hover:bg-gold hover:text-black transition-colors"
+            >
+              <X className="h-6 w-6" />
             </button>
             <motion.img
-              initial={{ scale: 0.93, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.93, opacity: 0 }}
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.92, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              src={lightbox} alt=""
-              className="max-h-[90vh] max-w-[92vw] object-contain shadow-2xl"
+              src={lightbox}
+              alt="Design Preview"
+              className="max-h-[88vh] max-w-[90vw] object-contain rounded-xl border border-gold/40 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             />
           </motion.div>
@@ -155,27 +170,43 @@ export default function DesignsPage() {
 
 function ImageMasonry({ images, onOpen, premium = false }: { images: any[]; onOpen: (url: string) => void; premium?: boolean }) {
   return (
-    <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 space-y-3">
+    <div className="columns-2 sm:columns-3 lg:columns-4 gap-4 space-y-4">
       {images.map((img: any, i: number) => (
         <motion.div
           key={img.id ?? i}
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.5, delay: (i % 8) * 0.05 }}
-          className="break-inside-avoid group relative overflow-hidden cursor-zoom-in"
-          onClick={() => onOpen(img.url)}
+          transition={{ duration: 0.5, delay: (i % 8) * 0.06 }}
+          className="break-inside-avoid"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={img.url} alt={img.alt ?? ""} className="w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-          {premium && (
-            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <span className="flex items-center gap-1 rounded-sm bg-amber-700/90 px-2 py-0.5 text-[10px] uppercase tracking-wider text-amber-50">
-                <Crown className="h-2.5 w-2.5" /> Exclusive
-              </span>
+          <Tilt3DCard maxTilt={8} scaleOnHover={1.03}>
+            <div
+              className="group relative overflow-hidden rounded-xl border border-border/40 cursor-pointer shadow-md bg-card"
+              onClick={() => onOpen(img.url)}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={img.url}
+                alt={img.alt ?? "Ascotex Design"}
+                className="w-full object-cover transition-transform duration-700 group-hover:scale-108"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                <div className="flex items-center justify-between w-full text-white">
+                  <span className="text-xs font-light tracking-wider">Expand View</span>
+                  <Eye className="h-4 w-4 text-gold" />
+                </div>
+              </div>
+              {premium && (
+                <div className="absolute top-3 right-3 opacity-90 group-hover:opacity-100 transition-opacity">
+                  <span className="flex items-center gap-1 rounded-full bg-gold/90 border border-gold px-2.5 py-1 text-[9px] uppercase tracking-widest text-black font-semibold shadow-md">
+                    <Crown className="h-3 w-3" /> Exclusive
+                  </span>
+                </div>
+              )}
             </div>
-          )}
+          </Tilt3DCard>
         </motion.div>
       ))}
     </div>

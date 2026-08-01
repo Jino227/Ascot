@@ -1,5 +1,5 @@
 {
-  "name": "ascot-fashions",
+  "name": "ascotex-fashions",
   "private": true,
   "scripts": {
     "dev": "next dev",

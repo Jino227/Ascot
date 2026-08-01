@@ -9,21 +9,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Mail, MapPin, Phone, Clock, Send } from "lucide-react";
+import { Mail, MapPin, Phone, Clock, Send, Sparkles, CheckCircle2 } from "lucide-react";
 import { TextReveal } from "@/components/layout/TextReveal";
 import { Magnetic } from "@/components/layout/Magnetic";
+import { Particles } from "@/components/layout/Particles";
+import { Tilt3DCard } from "@/components/layout/Tilt3DCard";
+import { SvgMorphDivider } from "@/components/layout/SvgMorphDivider";
 
 const DEMO_CONTACT = {
   eyebrow: "Get in touch",
   title: "Begin your fitting.",
   body: "Book a consultation or inquire about a custom commission. Our team typically responds within 24 hours.",
   address: "152 Savile Row\nLondon, W1S 3NE",
-  email: "hello@ascotfashions.com",
+  email: "hello@ascotexfashions.com",
   phone: "+44 (0) 20 7946 0128",
 };
 
 export default function Contact() {
-  useEffect(() => { document.title = "Contact — Ascot Fashions"; }, []);
+  useEffect(() => { document.title = "Contact — Ascotex Fashions"; }, []);
   const { data: content } = useQuery({ queryKey: ["website_content"], queryFn: () => getWebsiteContent() });
   const contact = { ...DEMO_CONTACT, ...(content?.contact ?? {}) };
 
@@ -45,53 +48,102 @@ export default function Contact() {
   }
 
   const details = [
-    { icon: MapPin, content: contact.address },
-    { icon: Mail, content: contact.email },
-    { icon: Phone, content: contact.phone },
-    { icon: Clock, content: "Mon–Fri, 9am – 6pm" },
+    { icon: MapPin, label: "Atelier Address", content: contact.address },
+    { icon: Mail, label: "Email Inquiry", content: contact.email },
+    { icon: Phone, label: "Direct Phone", content: contact.phone },
+    { icon: Clock, label: "Consultation Hours", content: "Mon–Fri, 9am – 6pm" },
   ].filter((d) => d.content);
 
   return (
-    <div className="container-x grid gap-16 pt-28 pb-20 md:grid-cols-2 md:pt-40 md:pb-32 md:gap-24">
-      <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
-        {contact.eyebrow && <p className="text-xs uppercase tracking-[0.4em] text-accent/80">{contact.eyebrow}</p>}
-        {contact.title && <h1 className="mt-5 font-display text-5xl md:text-6xl leading-tight"><TextReveal text={contact.title} /></h1>}
-        {contact.body && <p className="mt-6 max-w-md text-lg text-muted-foreground leading-relaxed">{contact.body}</p>}
+    <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
+      <Particles count={45} className="opacity-50" />
+      
+      <div className="container-x grid gap-16 pt-32 pb-24 md:grid-cols-2 md:pt-44 md:pb-36 md:gap-24 items-start relative z-10">
+        {/* Left Column: Contact Channels */}
+        <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
+          {contact.eyebrow && (
+            <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.4em] text-gold font-medium mb-3">
+              <Sparkles className="h-3.5 w-3.5 text-gold" /> {contact.eyebrow}
+            </p>
+          )}
+          {contact.title && (
+            <h1 className="mt-2 font-display text-5xl md:text-7xl leading-tight">
+              <TextReveal text={contact.title} />
+            </h1>
+          )}
+          {contact.body && (
+            <p className="mt-6 max-w-md text-base md:text-lg text-muted-foreground leading-relaxed font-light">
+              {contact.body}
+            </p>
+          )}
 
-        <motion.div className="mt-14 space-y-8" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }}>
-          {details.map((d, i) => (
-            <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }} className="flex items-start gap-4 group">
-              <div className="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center shrink-0 transition-all duration-300 group-hover:bg-accent/20 group-hover:scale-110">
-                <d.icon className="h-5 w-5 text-accent" />
-              </div>
-              <div className="pt-2 text-sm whitespace-pre-line leading-relaxed">{d.content}</div>
-            </motion.div>
-          ))}
-        </motion.div>
-      </motion.div>
-
-      <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
-        <form onSubmit={onSubmit} className="relative glass rounded-2xl p-8 md:p-10">
-          <div className="pointer-events-none absolute -top-20 -right-20 h-40 w-40 rounded-full bg-gold/15 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-20 -left-20 h-40 w-40 rounded-full bg-gold-deep/10 blur-3xl" />
-          <h2 className="font-display text-2xl mb-2">Send an inquiry</h2>
-          <p className="text-xs uppercase tracking-widest text-muted-foreground mb-8">We reply within 24 hours</p>
-          <div className="space-y-5">
-            <div className="grid gap-5 sm:grid-cols-2">
-              <div><Label htmlFor="name">Name *</Label><Input id="name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="mt-2 rounded-none focus-visible:ring-accent bg-background/50" /></div>
-              <div><Label htmlFor="email">Email *</Label><Input id="email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="mt-2 rounded-none focus-visible:ring-accent bg-background/50" /></div>
-              <div><Label htmlFor="company">Company</Label><Input id="company" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className="mt-2 rounded-none focus-visible:ring-accent bg-background/50" /></div>
-              <div><Label htmlFor="phone">Phone</Label><Input id="phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="mt-2 rounded-none focus-visible:ring-accent bg-background/50" /></div>
-            </div>
-            <div><Label htmlFor="message">Message *</Label><Textarea id="message" required rows={6} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="mt-2 rounded-none focus-visible:ring-accent bg-background/50" /></div>
-            <Magnetic className="w-full">
-              <Button type="submit" disabled={loading} className="w-full rounded-none bg-accent text-accent-foreground hover:bg-accent/90 py-6 h-auto text-sm uppercase tracking-[0.15em] shadow-[0_0_30px_rgba(212,175,55,0.25)]">
-                {loading ? "Sending…" : <><Send className="mr-2 h-4 w-4" /> Send inquiry</>}
-              </Button>
-            </Magnetic>
+          <div className="mt-14 space-y-6">
+            {details.map((d, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="flex items-start gap-5 group rounded-xl border border-border/40 bg-secondary/20 p-4 transition-all duration-300 hover:border-gold/40 hover:bg-secondary/40"
+              >
+                <div className="w-12 h-12 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center shrink-0 transition-all duration-300 group-hover:bg-gold group-hover:text-black">
+                  <d.icon className="h-5 w-5 text-gold group-hover:text-black transition-colors" />
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-gold/80 font-medium">{d.label}</div>
+                  <div className="mt-1 text-sm whitespace-pre-line leading-relaxed text-foreground font-light">{d.content}</div>
+                </div>
+              </motion.div>
+            ))}
           </div>
-        </form>
-      </motion.div>
+        </motion.div>
+
+        {/* Right Column: Glass Inquiry Form */}
+        <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
+          <Tilt3DCard maxTilt={4} scaleOnHover={1.01}>
+            <form onSubmit={onSubmit} className="relative rounded-2xl border border-gold/30 bg-black/40 backdrop-blur-xl p-8 md:p-12 shadow-2xl overflow-hidden">
+              <div className="pointer-events-none absolute -top-24 -right-24 h-48 w-48 rounded-full bg-gold/15 blur-3xl" />
+              <div className="pointer-events-none absolute -bottom-24 -left-24 h-48 w-48 rounded-full bg-gold-deep/10 blur-3xl" />
+
+              <h2 className="font-display text-3xl mb-1 text-foreground">Send an Inquiry</h2>
+              <p className="text-xs uppercase tracking-[0.2em] text-gold/80 mb-8 font-light">We reply within 24 hours</p>
+
+              <div className="space-y-6">
+                <div className="grid gap-6 sm:grid-cols-2">
+                  <div>
+                    <Label htmlFor="name" className="text-xs uppercase tracking-wider text-muted-foreground">Name *</Label>
+                    <Input id="name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="mt-2 rounded-none border-border/60 bg-background/50 focus-visible:ring-gold" />
+                  </div>
+                  <div>
+                    <Label htmlFor="email" className="text-xs uppercase tracking-wider text-muted-foreground">Email *</Label>
+                    <Input id="email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="mt-2 rounded-none border-border/60 bg-background/50 focus-visible:ring-gold" />
+                  </div>
+                  <div>
+                    <Label htmlFor="company" className="text-xs uppercase tracking-wider text-muted-foreground">Company</Label>
+                    <Input id="company" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className="mt-2 rounded-none border-border/60 bg-background/50 focus-visible:ring-gold" />
+                  </div>
+                  <div>
+                    <Label htmlFor="phone" className="text-xs uppercase tracking-wider text-muted-foreground">Phone</Label>
+                    <Input id="phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="mt-2 rounded-none border-border/60 bg-background/50 focus-visible:ring-gold" />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="message" className="text-xs uppercase tracking-wider text-muted-foreground">Message *</Label>
+                  <Textarea id="message" required rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="mt-2 rounded-none border-border/60 bg-background/50 focus-visible:ring-gold" />
+                </div>
+
+                <Magnetic className="w-full">
+                  <Button type="submit" disabled={loading} className="w-full rounded-none bg-accent text-accent-foreground hover:bg-accent/90 py-6 h-auto text-xs uppercase tracking-[0.2em] shadow-[0_0_30px_rgba(212,175,55,0.3)] transition-all">
+                    {loading ? "Sending Inquiry…" : <><Send className="mr-2 h-4 w-4" /> Send Inquiry</>}
+                  </Button>
+                </Magnetic>
+              </div>
+            </form>
+          </Tilt3DCard>
+        </motion.div>
+      </div>
     </div>
   );
 }

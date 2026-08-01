@@ -296,7 +296,7 @@ export async function checkIsClient(userId: string) {
 export async function getAllCollectionsAuthed(userId: string) {
   const { data: client } = await supabaseAdmin
     .from("clients").select("is_active").eq("user_id", userId).maybeSingle();
-  if (client && !client.is_active) throw new Error("Account disabled. Contact the Ascot team.");
+  if (client && !client.is_active) throw new Error("Account disabled. Contact the Ascotex team.");
   return getCollections({ userId });
 }
 

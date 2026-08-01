@@ -1,4 +1,4 @@
-# Ascot Fashions — User Guide
+# Ascotex Fashions — User Guide
 
 > A bespoke clothing brand website with member-exclusive content and an admin panel.
 

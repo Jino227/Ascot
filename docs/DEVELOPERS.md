@@ -1,4 +1,4 @@
-# Ascot Fashions — Developer Guide
+# Ascotex Fashions — Developer Guide
 
 > Next.js 15 project with Supabase, Tailwind CSS v4, motion, and TanStack Query.
 

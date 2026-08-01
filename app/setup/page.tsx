@@ -19,7 +19,7 @@ export default function SetupPage() {
   const [name, setName] = useState("");
   const [done, setDone] = useState(false);
 
-  useEffect(() => { document.title = "Admin Setup — Ascot Fashions"; }, []);
+  useEffect(() => { document.title = "Admin Setup — Ascotex Fashions"; }, []);
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();

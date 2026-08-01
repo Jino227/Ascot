@@ -15,7 +15,7 @@ export default function AdminRegister() {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
 
-  useEffect(() => { document.title = "Register Admin — Ascot Fashions"; }, []);
+  useEffect(() => { document.title = "Register Admin — Ascotex Fashions"; }, []);
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();

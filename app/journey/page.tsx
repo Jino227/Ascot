@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { ArrowRight, CheckCircle } from "lucide-react";
+import { ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { getJourneySteps } from "@/lib/actions";
@@ -12,8 +12,12 @@ import { Button } from "@/components/ui/button";
 import { TextReveal } from "@/components/layout/TextReveal";
 import { Magnetic } from "@/components/layout/Magnetic";
 import { Particles } from "@/components/layout/Particles";
+import { Tilt3DCard } from "@/components/layout/Tilt3DCard";
+import { SvgMorphDivider } from "@/components/layout/SvgMorphDivider";
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const DEMO_STEPS = [
   { id: "js1", title: "Material Sourcing", subtitle: "Premium materials from trusted suppliers", description: "Every masterpiece begins by selecting premium fabrics, threads, beads, sequins, zari and trims from trusted suppliers. Every material is inspected before entering production.", image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&q=80", step_order: 1 },
@@ -32,77 +36,106 @@ function GsapReveal({ children, className }: { children: React.ReactNode; classN
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    gsap.fromTo(el, { opacity: 0, y: 80 }, {
-      opacity: 1, y: 0, duration: 1.2, ease: "power3.out",
-      scrollTrigger: { trigger: el, start: "top 80%", toggleActions: "play none none reverse" },
+    gsap.fromTo(el, { opacity: 0, y: 70 }, {
+      opacity: 1, y: 0, duration: 1, ease: "power3.out",
+      scrollTrigger: { trigger: el, start: "top 85%", toggleActions: "play none none reverse" },
     });
   }, []);
   return <div ref={ref} className={className}>{children}</div>;
 }
 
 export default function Journey() {
-  useEffect(() => { document.title = "Our Journey — Ascot Fashions"; }, []);
+  useEffect(() => { document.title = "Our Journey — Ascotex Fashions"; }, []);
   const { data: steps = [] } = useQuery({ queryKey: ["journey_steps"], queryFn: () => getJourneySteps() });
   const displaySteps = steps.length > 0 ? steps : DEMO_STEPS;
 
   return (
-    <div>
-      {/* Hero */}
-      <section className="container-x pt-32 pb-16 md:pt-44 md:pb-24">
-        <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
-          <p className="text-xs uppercase tracking-[0.4em] text-accent/80 border-b border-accent/40 pb-2 inline-block">Our process</p>
-          <h1 className="mt-6 font-display text-5xl md:text-7xl max-w-3xl leading-tight">
+    <div className="relative overflow-x-hidden bg-background text-foreground">
+      {/* ── Hero Section ── */}
+      <section className="relative container-x pt-32 pb-16 md:pt-44 md:pb-24 overflow-hidden">
+        <Particles count={40} className="opacity-50" />
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9 }}>
+          <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.4em] text-gold font-medium border-b border-gold/30 pb-2">
+            <Sparkles className="h-3.5 w-3.5 text-gold" /> Atelier Craftsmanship
+          </p>
+          <div className="font-script text-3xl md:text-4xl text-champagne/90 italic mt-3">From Concept to Creation</div>
+          <h1 className="mt-2 font-display text-5xl md:text-7xl max-w-3xl leading-tight">
             <TextReveal text="The Journey." delay={0.1} />
           </h1>
-          <p className="mt-6 text-lg text-muted-foreground max-w-xl leading-relaxed">
-            A step-by-step visual exploration of our craftsmanship and dedication to perfection.
+          <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed font-light">
+            A step-by-step visual exploration of our master tailoring techniques, artisan embroidery, and dedication to perfection.
           </p>
         </motion.div>
       </section>
 
-      {/* Journey Sequence */}
+      {/* SVG Morphing Divider */}
+      <SvgMorphDivider />
+
+      {/* ── Journey Sequence Timeline ── */}
       <div className="container-x pb-28 md:pb-40">
         <div className="space-y-16 md:space-y-24">
           {displaySteps.map((step: any, i: number) => {
             if (!step.image) return null;
             return (
               <GsapReveal key={step.id || i}>
-                <div className="relative w-full aspect-[4/3] md:aspect-[21/9] overflow-hidden bg-muted group rounded-lg border border-gold/10">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={step.image}
-                    alt="Journey step"
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
-                  <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between gap-4">
-                    <div>
-                      <div className="flex items-center gap-3">
-                        <span className="font-display text-5xl text-gradient-gold">{String(i + 1).padStart(2, "0")}</span>
-                        <span className="h-px w-10 bg-gold/50" />
+                <Tilt3DCard maxTilt={5} scaleOnHover={1.02}>
+                  <div className="relative w-full aspect-[4/3] md:aspect-[21/9] overflow-hidden bg-black/40 group rounded-xl border border-gold/20 shadow-2xl">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={step.image}
+                      alt={step.title || "Journey step"}
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-108"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                    <div className="absolute inset-0 bg-black/15 group-hover:bg-transparent transition-colors duration-500" />
+                    
+                    <div className="absolute bottom-6 left-6 right-6 md:bottom-10 md:left-10 md:right-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                      <div>
+                        <div className="flex items-center gap-3">
+                          <span className="font-display text-5xl md:text-6xl text-gradient-gold font-light">
+                            {String(i + 1).padStart(2, "0")}
+                          </span>
+                          <span className="h-0.5 w-12 bg-gold/60" />
+                        </div>
+                        {step.title && (
+                          <h3 className="mt-2 font-display text-2xl md:text-4xl text-foreground font-normal">
+                            {step.title}
+                          </h3>
+                        )}
+                        {step.subtitle && (
+                          <p className="text-xs uppercase tracking-widest text-gold/80 mt-1">
+                            {step.subtitle}
+                          </p>
+                        )}
                       </div>
-                      {step.title && <h3 className="mt-3 font-display text-2xl md:text-3xl text-foreground">{step.title}</h3>}
+                      {step.description && (
+                        <p className="max-w-md text-sm text-foreground/80 leading-relaxed font-light backdrop-blur-sm bg-black/40 p-4 rounded-lg border border-gold/10">
+                          {step.description}
+                        </p>
+                      )}
                     </div>
-                    {step.description && <p className="hidden max-w-md text-sm text-foreground/70 leading-relaxed md:block">{step.description}</p>}
                   </div>
-                </div>
+                </Tilt3DCard>
               </GsapReveal>
             );
           })}
         </div>
       </div>
 
-      {/* Bottom CTA */}
-      <section className="relative bg-gradient-to-br from-ink via-espresso to-ink py-28 overflow-hidden bg-grain">
-        <Particles count={50} className="opacity-60" />
-        <div className="absolute top-1/3 left-1/4 w-80 h-80 bg-gold/[0.06] rounded-full blur-3xl" />
-        <div className="container-x relative text-center">
-          <h2 className="font-display text-4xl md:text-6xl text-foreground leading-tight text-balance">Ready to start your project?</h2>
-          <p className="mt-4 text-foreground/60 max-w-lg mx-auto">Contact our team to discuss your requirements and receive a personalised quote.</p>
-          <Magnetic className="mt-10">
-            <Button asChild size="lg" className="rounded-none bg-accent text-accent-foreground hover:bg-accent/90 uppercase tracking-[0.15em] px-10 shadow-[0_0_30px_rgba(212,175,55,0.3)]">
+      {/* ── Bottom CTA ── */}
+      <section className="relative bg-gradient-to-br from-ink via-espresso to-ink py-32 overflow-hidden bg-grain border-t border-border/30">
+        <Particles count={60} className="opacity-70" />
+        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-gold/[0.07] rounded-full blur-3xl" />
+        <div className="container-x relative text-center max-w-2xl mx-auto">
+          <h2 className="font-display text-4xl md:text-6xl text-foreground leading-tight text-balance">
+            Ready to start your bespoke project?
+          </h2>
+          <p className="mt-6 text-lg text-foreground/70 font-light max-w-lg mx-auto">
+            Contact our sales and design team to discuss custom commissions and receive a personalised catalogue.
+          </p>
+          <Magnetic className="mt-10 inline-block">
+            <Button asChild size="lg" className="rounded-none bg-accent text-accent-foreground hover:bg-accent/90 uppercase tracking-[0.2em] px-10 py-6 h-auto text-xs shadow-[0_0_30px_rgba(212,175,55,0.35)]">
               <Link href="/contact">Get in touch <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
           </Magnetic>

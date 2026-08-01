@@ -410,7 +410,7 @@ INSERT INTO public.website_content (section_key, content) VALUES
 ('about', '{
   "eyebrow": "Our Heritage",
   "title": "Four decades of tailoring excellence.",
-  "body": "Founded in 1985, Ascot Fashions began as a small tailoring atelier with a commitment to exceptional craftsmanship. Today we create bespoke and ready-to-wear garments for discerning clients worldwide.",
+  "body": "Founded in 1985, Ascotex Fashions began as a small tailoring atelier with a commitment to exceptional craftsmanship. Today we create bespoke and ready-to-wear garments for discerning clients worldwide.",
   "image": "",
   "stats": [
     {"key": "40+", "label": "Years of craft"},
@@ -440,7 +440,7 @@ INSERT INTO public.website_content (section_key, content) VALUES
   "title": "Start your next project.",
   "body": "Request a catalogue or contact our sales team. We typically respond within 24 hours.",
   "address": "152 Savile Row\nLondon, W1S 3NE",
-  "email": "hello@ascotfashions.com",
+  "email": "hello@ascotexfashions.com",
   "phone": "+44 (0) 20 7946 0128",
   "cta": "Request Catalogue"
 }'::jsonb),
@@ -448,7 +448,7 @@ INSERT INTO public.website_content (section_key, content) VALUES
   "title": "Four decades of tailoring excellence.",
   "subtitle": "From our founding in 1985 to our atelier on Savile Row, every garment tells a story of precision and passion.",
   "image": "",
-  "body1": "Ascot Fashions was founded by master tailor William Ascot, who apprenticed on Savile Row before opening his own atelier. His vision was simple: create garments that honour the traditions of British tailoring while embracing modern silhouettes and sensibilities.",
+  "body1": "Ascotex Fashions was founded by master tailor William Ascotex, who apprenticed on Savile Row before opening his own atelier. His vision was simple: create garments that honour the traditions of British tailoring while embracing modern silhouettes and sensibilities.",
   "body2": "Today, our team of twelve master tailors continues this legacy. Each garment passes through dozens of hands — from pattern cutter to finisher — before it reaches our fitting rooms.",
   "body3": "We serve clients from London to Tokyo, creating everything from business suits and evening wear to casual jackets and overcoats.",
   "stats": [
@@ -461,7 +461,7 @@ INSERT INTO public.website_content (section_key, content) VALUES
 ('footer', '{
   "description": "Bespoke tailoring and ready-to-wear collections crafted since 1985.",
   "address": "152 Savile Row\nLondon, W1S 3NE",
-  "email": "hello@ascotfashions.com",
+  "email": "hello@ascotexfashions.com",
   "phone": "+44 (0) 20 7946 0128",
   "copyright": "Made to last."
 }'::jsonb),
@@ -470,7 +470,7 @@ INSERT INTO public.website_content (section_key, content) VALUES
   "images": [
     {"url": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80", "caption": "Master tailor at work on a bespoke jacket", "category": "employees"},
     {"url": "https://images.unsplash.com/photo-1567789884554-0b844b597180?w=800&q=80", "caption": "Modern cutting room with precision machinery", "category": "machines"},
-    {"url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80", "caption": "The full Ascot Fashions team", "category": "group"},
+    {"url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80", "caption": "The full Ascotex Fashions team", "category": "group"},
     {"url": "https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=800&q=80", "caption": "Pattern makers collaborating on a new design", "category": "employees"},
     {"url": "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&q=80", "caption": "Industrial sewing machines in production", "category": "machines"},
     {"url": "https://images.unsplash.com/photo-1604328698692-f76ea9498e72?w=800&q=80", "caption": "Quality inspection of finished garments", "category": "employees"},

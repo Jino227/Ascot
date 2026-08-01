@@ -9,7 +9,7 @@ import { ArrowUp, ArrowUpRight } from "lucide-react";
 const DEMO_FOOTER = {
   description: "Bespoke tailoring and ready-to-wear collections crafted on Savile Row since 1985. Every garment is made to measure, made to last, and made for you.",
   address: "152 Savile Row\nLondon, W1S 3NE",
-  email: "hello@ascotfashions.com",
+  email: "hello@ascotexfashions.com",
   phone: "+44 (0) 20 7946 0128",
   copyright: "Made to last.",
 };
@@ -34,7 +34,7 @@ export function SiteFooter() {
     <footer className="relative border-t border-gold/15 bg-background overflow-hidden">
       {/* Giant watermark word */}
       <div className="pointer-events-none select-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap font-display text-[18vw] leading-none text-foreground/[0.03]">
-        Ascot
+        Ascotex
       </div>
 
       <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -47,7 +47,15 @@ export function SiteFooter() {
       <div className="container-x relative grid gap-12 py-20 md:grid-cols-4 md:py-24">
         <div className="md:col-span-2">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-            <Link href="/" className="font-display text-3xl tracking-tight">Ascot<span className="text-accent">·</span>Fashions</Link>
+            <Link href="/" className="inline-block group">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo.png"
+                alt="Ascotex Fashions"
+                className="h-16 w-auto object-contain transition-transform duration-500 group-hover:scale-105"
+                style={{ mixBlendMode: "screen" }}
+              />
+            </Link>
             {footer.description && <p className="mt-6 max-w-md text-sm text-muted-foreground leading-relaxed">{footer.description}</p>}
             <div className="mt-8 flex gap-3">
               {[{ label: "Est. 1985" }, { label: "Savile Row" }, { label: "Bespoke" }].map((tag) => (
@@ -84,7 +92,7 @@ export function SiteFooter() {
       </div>
 
       <div className="container-x relative flex flex-col justify-between gap-4 border-t border-border/60 py-6 text-xs text-muted-foreground md:flex-row">
-        <div>© {new Date().getFullYear()} Ascot Fashions. All rights reserved.</div>
+        <div>© {new Date().getFullYear()} Ascotex Fashions. All rights reserved.</div>
         {footer.copyright && <div className="font-display italic text-accent/70">{footer.copyright}</div>}
       </div>
     </footer>

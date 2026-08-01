@@ -1,4 +1,4 @@
-// File: C:\Users\Admin\Desktop\Ascot\luxweave-showcase\app\page.tsx
+// File: C:\Qcamy portals\ascot\Ascot\app\page.tsx
 import * as entry from '../../../app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

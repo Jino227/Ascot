@@ -152,7 +152,7 @@ function HeroEditor({ initial, onSave }: { initial: HeroContent; onSave: (data: 
   }
 
   return (
-    <div className="border border-border/60 bg-card p-6 space-y-6">
+    <div className="rounded-xl border border-border/60 bg-black/30 backdrop-blur-md p-6 space-y-6 shadow-xl">
       <div className="flex items-center justify-between">
         <Label className="text-base font-display">Hero</Label>
         <span className="text-xs text-muted-foreground">Homepage banner section</span>
@@ -359,7 +359,7 @@ function AboutEditor({ initial, onSave }: { initial: AboutContent; onSave: (data
         <div>
           <Label className="text-xs uppercase tracking-wider text-muted-foreground">Body text</Label>
           <Textarea className="mt-1.5 rounded-none text-sm" rows={4} value={about.body}
-            placeholder="Founded in 1985, Ascot Fashions…"
+            placeholder="Founded in 1985, Ascotex Fashions…"
             onChange={(e) => setField("body", e.target.value)} />
         </div>
       </div>
@@ -532,7 +532,7 @@ function TestimonialsEditor({ initial, onSave }: { initial: TestimonialsContent;
               </div>
               <div className="sm:col-span-2">
                 <Label className="text-xs uppercase tracking-wider text-muted-foreground">Quote</Label>
-                <Textarea className="mt-1.5 rounded-none text-sm" rows={3} value={item.quote} placeholder="Ascot is simply the best..."
+                <Textarea className="mt-1.5 rounded-none text-sm" rows={3} value={item.quote} placeholder="Ascotex is simply the best..."
                   onChange={(e) => updateItem(idx, "quote", e.target.value)} />
               </div>
             </div>
@@ -605,7 +605,7 @@ function ContactEditor({ initial, onSave }: { initial: ContactContent; onSave: (
         </div>
         <div>
           <Label className="text-xs uppercase tracking-wider text-muted-foreground">Email</Label>
-          <Input className="mt-1.5 rounded-none text-sm" value={data.email ?? ""} placeholder="hello@ascotfashions.com"
+          <Input className="mt-1.5 rounded-none text-sm" value={data.email ?? ""} placeholder="hello@ascotexfashions.com"
             onChange={(e) => setField("email", e.target.value)} />
         </div>
         <div>
@@ -744,7 +744,7 @@ function AboutPageEditor({ initial, onSave }: { initial: AboutPageContent; onSav
   }
 
   return (
-    <div className="border border-border/60 bg-card p-6 space-y-6">
+    <div className="rounded-xl border border-border/60 bg-black/30 backdrop-blur-md p-6 space-y-6 shadow-xl">
       <div className="flex items-center justify-between">
         <Label className="text-base font-display">About Page</Label>
         <span className="text-xs text-muted-foreground">Main /about page content</span>
@@ -963,7 +963,7 @@ export default function AdminContent() {
 
       {/* JSON editors for remaining sections */}
       {JSON_SECTIONS.map((s) => (
-        <div key={s} className="border border-border/60 bg-card p-6">
+        <div key={s} className="rounded-xl border border-border/60 bg-black/30 backdrop-blur-md p-6 shadow-xl space-y-3">
           <Label className="text-base font-display capitalize">{s}</Label>
           <Textarea
             className="mt-3 font-mono text-xs"
