@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { ScrollProgress } from "@/components/layout/ScrollProgress";
+import { AutoLogout } from "@/components/layout/AutoLogout";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body className="min-h-screen antialiased bg-mesh" suppressHydrationWarning>
         <Providers>
+          <AutoLogout />
           <SmoothScroll />
           <ScrollProgress />
           <SiteHeader />

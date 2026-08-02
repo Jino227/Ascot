@@ -48,6 +48,7 @@ import { FloatingGlass } from "@/components/layout/FloatingGlass";
 import { GsapCounter } from "@/components/layout/GsapCounter";
 import { Tilt3DCard } from "@/components/layout/Tilt3DCard";
 import { SvgMorphDivider } from "@/components/layout/SvgMorphDivider";
+import { PageLoader } from "@/components/layout/PageLoader";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -330,58 +331,56 @@ export default function Home() {
   }, []);
 
   const { user } = useAuth();
-  const { data: content } = useQuery({
+  const { data: content, isLoading: isL1 } = useQuery({
     queryKey: ["website_content"],
     queryFn: () => getWebsiteContent(),
   });
-  const { data: featuredColl = [] } = useQuery({
+  const { data: featuredColl = [], isLoading: isL2 } = useQuery({
     queryKey: ["collections", "featured"],
     queryFn: () => getFeaturedCollections(),
   });
-  const { data: journeySteps = [] } = useQuery({
+  const { data: journeySteps = [], isLoading: isL3 } = useQuery({
     queryKey: ["journey_steps"],
     queryFn: () => getJourneySteps(),
   });
-  const { data: celebrities = [] } = useQuery({
+  const { data: celebrities = [], isLoading: isL4 } = useQuery({
     queryKey: ["public", "celebrities"],
     queryFn: () => getPublicCelebrities(),
   });
-  const { data: videos = [] } = useQuery({
+  const { data: videos = [], isLoading: isL5 } = useQuery({
     queryKey: ["videos"],
     queryFn: () => getVideos(),
   });
-  const { data: featuredVids = [] } = useQuery({
+  const { data: featuredVids = [], isLoading: isL6 } = useQuery({
     queryKey: ["videos", "featured"],
     queryFn: () => getFeaturedVideos(),
   });
-  const { data: designImages = [] } = useQuery({
+  const { data: designImages = [], isLoading: isL7 } = useQuery({
     queryKey: ["designs", "public", "preview"],
     queryFn: () => getPublicDesigns(12),
   });
 
+  const isLoading = isL1 || isL2 || isL3 || isL4 || isL5 || isL6 || isL7;
+
   const c = content ?? {};
-  const rawHero = c.hero ?? {};
-  const hero = { ...DEMO.hero, ...rawHero };
+  const hero = c.hero ?? {};
 
   const heroSlides: HeroSlide[] = (() => {
-    const s = Array.isArray(rawHero.slides)
-      ? (rawHero.slides as HeroSlide[])
+    const s = Array.isArray(hero.slides)
+      ? (hero.slides as HeroSlide[])
       : [];
     if (s.length > 0) return s;
     if (hero.video_url) return [{ type: "video" as const, url: hero.video_url }];
-    if (rawHero.image) return [{ type: "image" as const, url: rawHero.image }];
+    if (hero.image) return [{ type: "image" as const, url: hero.image }];
     return [];
   })();
 
-  const about = { ...DEMO.about, ...(c.about ?? {}) };
-  const process = { ...DEMO.process, ...(c.process ?? {}) };
-  const testimonials = c.testimonials?.items?.length
-    ? c.testimonials.items
-    : DEMO.testimonials;
-  const contact = { ...DEMO.contact, ...(c.contact ?? {}) };
-  const jSteps = journeySteps.length > 0 ? journeySteps : DEMO.journey;
-  const displayVideos = featuredVids.length > 0 ? featuredVids : videos;
-  const showVids = displayVideos.length > 0 ? displayVideos : DEMO.videos;
+  const about = c.about ?? {};
+  const process = c.process ?? {};
+  const testimonials = c.testimonials?.items ?? [];
+  const contact = c.contact ?? {};
+  const jSteps = journeySteps;
+  const showVids = featuredVids.length > 0 ? featuredVids : videos;
 
   const [activePreviewImage, setActivePreviewImage] = useState<string | null>(
     null
@@ -422,6 +421,8 @@ export default function Home() {
       transition: { duration: 0.8, delay: i * 0.12, ease: "easeOut" as const },
     }),
   };
+
+  if (isLoading) return <PageLoader />;
 
   return (
     <div className="relative overflow-x-hidden bg-background text-foreground">
@@ -681,7 +682,7 @@ export default function Home() {
           </p>
         </motion.div>
 
-        {designImages.length > 0 ? (
+        {designImages.length > 0 && (
           <div className="mt-16 columns-2 sm:columns-3 lg:columns-4 gap-4 space-y-4">
             {designImages.slice(0, 12).map((img: any, i: number) => (
               <motion.div
@@ -707,32 +708,6 @@ export default function Home() {
                     </span>
                     <Eye className="h-4 w-4 text-gold" />
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          /* Fallback when no images uploaded yet — show demo designs */
-          <div className="mt-16 columns-2 sm:columns-3 lg:columns-4 gap-4 space-y-4">
-            {DEMO.designs.map((img, i) => (
-              <motion.div
-                key={img.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                onClick={() => setActivePreviewImage(img.url)}
-                className="break-inside-avoid group relative overflow-hidden rounded-xl border border-border/40 cursor-pointer"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={img.url}
-                  alt="Design"
-                  className="w-full object-cover transition-transform duration-700 group-hover:scale-108"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <Eye className="h-6 w-6 text-gold" />
                 </div>
               </motion.div>
             ))}

@@ -14,22 +14,13 @@ import { Magnetic } from "@/components/layout/Magnetic";
 import { Particles } from "@/components/layout/Particles";
 import { Tilt3DCard } from "@/components/layout/Tilt3DCard";
 import { SvgMorphDivider } from "@/components/layout/SvgMorphDivider";
+import { PageLoader } from "@/components/layout/PageLoader";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const DEMO_STEPS = [
-  { id: "js1", title: "Material Sourcing", subtitle: "Premium materials from trusted suppliers", description: "Every masterpiece begins by selecting premium fabrics, threads, beads, sequins, zari and trims from trusted suppliers. Every material is inspected before entering production.", image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&q=80", step_order: 1 },
-  { id: "js2", title: "Hand Dyeing", subtitle: "Traditional colour mastery", description: "Traditional dyeing techniques produce rich colours with excellent consistency and durability, creating the perfect foundation for every garment.", image: "https://images.unsplash.com/photo-1567789884554-0b844b597180?w=1200&q=80", step_order: 2 },
-  { id: "js3", title: "Design Studio", subtitle: "Concepts to embroidery-ready artwork", description: "Creative designers transform concepts into embroidery-ready artwork and sampling, working closely with clients to bring visions to life.", image: "https://images.unsplash.com/photo-1604328698692-f76ea9498e72?w=1200&q=80", step_order: 3 },
-  { id: "js4", title: "Artwork Preparation", subtitle: "Designs transferred to fabric", description: "Designs are accurately transferred to fabric using precision techniques that guide every stitch with absolute accuracy.", image: "https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=1200&q=80", step_order: 4 },
-  { id: "js5", title: "Hand Embroidery", subtitle: "Traditional craftsmanship", description: "Experienced artisans create intricate embroidery using traditional techniques passed down through generations.", image: "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80", step_order: 5 },
-  { id: "js6", title: "Stitching & Production", subtitle: "Pattern to final garment", description: "Pattern making, cutting, stitching, finishing and pressing produce the final garment with meticulous attention to every detail.", image: "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1200&q=80", step_order: 6 },
-  { id: "js7", title: "Quality Inspection", subtitle: "Detailed quality assurance", description: "Each piece undergoes detailed inspection for stitches, beads, finishing and overall quality before approval.", image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&q=80", step_order: 7 },
-  { id: "js8", title: "Final Approval", subtitle: "Senior verification", description: "Senior merchandisers verify workmanship and client specifications meet our exacting standards.", image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=1200&q=80", step_order: 8 },
-  { id: "js9", title: "Packaging & Dispatch", subtitle: "Worldwide delivery", description: "Products are carefully packed and shipped to clients around the world, ensuring they arrive in perfect condition.", image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=1200&q=80", step_order: 9 },
-];
+
 
 function GsapReveal({ children, className, index = 1 }: { children: React.ReactNode; className?: string; index?: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -50,8 +41,10 @@ function GsapReveal({ children, className, index = 1 }: { children: React.ReactN
 
 export default function Journey() {
   useEffect(() => { document.title = "Our Journey — Ascotex Fashions"; }, []);
-  const { data: steps = [] } = useQuery({ queryKey: ["journey_steps"], queryFn: () => getJourneySteps() });
-  const displaySteps = steps.length > 0 ? steps : DEMO_STEPS;
+  const { data: steps = [], isLoading } = useQuery({ queryKey: ["journey_steps"], queryFn: () => getJourneySteps() });
+  const displaySteps = steps;
+
+  if (isLoading) return <PageLoader />;
 
   return (
     <div className="relative overflow-x-hidden bg-background text-foreground">

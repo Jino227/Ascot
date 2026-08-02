@@ -15,20 +15,15 @@ import { Magnetic } from "@/components/layout/Magnetic";
 import { Particles } from "@/components/layout/Particles";
 import { Tilt3DCard } from "@/components/layout/Tilt3DCard";
 import { SvgMorphDivider } from "@/components/layout/SvgMorphDivider";
+import { PageLoader } from "@/components/layout/PageLoader";
 
-const DEMO_CONTACT = {
-  eyebrow: "Get in touch",
-  title: "Begin your fitting.",
-  body: "Book a consultation or inquire about a custom commission. Our team typically responds within 24 hours.",
-  address: "152 Savile Row\nLondon, W1S 3NE",
-  email: "hello@ascotexfashions.com",
-  phone: "+44 (0) 20 7946 0128",
-};
 
 export default function Contact() {
   useEffect(() => { document.title = "Contact — Ascotex Fashions"; }, []);
-  const { data: content } = useQuery({ queryKey: ["website_content"], queryFn: () => getWebsiteContent() });
-  const contact = { ...DEMO_CONTACT, ...(content?.contact ?? {}) };
+  const { data: content, isLoading } = useQuery({ queryKey: ["website_content"], queryFn: () => getWebsiteContent() });
+  const contact = content?.contact ?? {};
+
+  if (isLoading) return <PageLoader />;
 
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "", company: "", message: "" });

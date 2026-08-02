@@ -12,12 +12,12 @@ gsap.registerPlugin(ScrollTrigger);
  * Usage: <TextReveal text="..." className="..."> or pass children string.
  */
 export function TextReveal({
-  text,
+  text = "",
   className,
   as: Tag = "span",
   delay = 0,
 }: {
-  text: string;
+  text?: string;
   className?: string;
   as?: "span" | "h1" | "h2" | "h3" | "p" | "div";
   delay?: number;
@@ -56,6 +56,7 @@ export function TextReveal({
   }, [delay]);
 
   const TagAny = Tag as any;
+  if (!text) return null;
   return (
     <TagAny ref={ref} className={cn(className)} aria-label={text}>
       <span className="sr-only">{text}</span>

@@ -32,7 +32,7 @@ export default function AuthPage() {
         supabase.auth.signOut();
         router.refresh();
       } else {
-        router.replace("/private-collections");
+        router.replace("/");
       }
     })();
   }, [user, router]);

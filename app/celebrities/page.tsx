@@ -12,6 +12,7 @@ import { Tilt3DCard } from "@/components/layout/Tilt3DCard";
 import { Particles } from "@/components/layout/Particles";
 import { Magnetic } from "@/components/layout/Magnetic";
 import { SvgMorphDivider } from "@/components/layout/SvgMorphDivider";
+import { PageLoader } from "@/components/layout/PageLoader";
 
 export default function CelebritiesPage() {
   const [lightbox, setLightbox] = useState<{ image: string; name: string; description?: string } | null>(null);
@@ -22,6 +23,8 @@ export default function CelebritiesPage() {
     queryKey: ["public", "celebrities"],
     queryFn: () => getPublicCelebrities(),
   });
+
+  if (isLoading) return <PageLoader />;
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setLightbox(null); };
