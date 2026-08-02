@@ -58,7 +58,7 @@ export function SiteFooter() {
             </Link>
             {footer.description && <p className="mt-6 max-w-md text-sm text-muted-foreground leading-relaxed">{footer.description}</p>}
             <div className="mt-8 flex gap-3">
-              {[{ label: "Est. 1985" }, { label: "Savile Row" }, { label: "Bespoke" }].map((tag) => (
+              {[{ label: "Est. 2004" }, { label: "Savile Row" }, { label: "Bespoke" }].map((tag) => (
                 <span key={tag.label} className="rounded-full border border-border/60 px-3 py-1 text-[10px] uppercase tracking-widest text-muted-foreground">
                   {tag.label}
                 </span>

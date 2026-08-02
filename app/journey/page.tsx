@@ -31,16 +31,20 @@ const DEMO_STEPS = [
   { id: "js9", title: "Packaging & Dispatch", subtitle: "Worldwide delivery", description: "Products are carefully packed and shipped to clients around the world, ensuring they arrive in perfect condition.", image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=1200&q=80", step_order: 9 },
 ];
 
-function GsapReveal({ children, className }: { children: React.ReactNode; className?: string }) {
+function GsapReveal({ children, className, index = 1 }: { children: React.ReactNode; className?: string; index?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    gsap.fromTo(el, { opacity: 0, y: 70 }, {
-      opacity: 1, y: 0, duration: 1, ease: "power3.out",
-      scrollTrigger: { trigger: el, start: "top 85%", toggleActions: "play none none reverse" },
+    
+    // First item triggers as soon as it enters the viewport to avoid a blank gap
+    const startPoint = index === 0 ? "top bottom" : "top 90%";
+    
+    gsap.fromTo(el, { opacity: 0, y: 50 }, {
+      opacity: 1, y: 0, duration: 1.2, ease: "power3.out",
+      scrollTrigger: { trigger: el, start: startPoint, toggleActions: "play none none reverse" },
     });
-  }, []);
+  }, [index]);
   return <div ref={ref} className={className}>{children}</div>;
 }
 
@@ -73,50 +77,61 @@ export default function Journey() {
 
       {/* ── Journey Sequence Timeline ── */}
       <div className="container-x pb-28 md:pb-40">
-        <div className="space-y-16 md:space-y-24">
+        <div className="space-y-24 lg:space-y-32">
           {displaySteps.map((step: any, i: number) => {
             if (!step.image) return null;
+            const isEven = i % 2 === 0;
             return (
-              <GsapReveal key={step.id || i}>
-                <Tilt3DCard maxTilt={5} scaleOnHover={1.02}>
-                  <div className="relative w-full aspect-[4/3] md:aspect-[21/9] overflow-hidden bg-black/40 group rounded-xl border border-gold/20 shadow-2xl">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={step.image}
-                      alt={step.title || "Journey step"}
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-108"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
-                    <div className="absolute inset-0 bg-black/15 group-hover:bg-transparent transition-colors duration-500" />
-                    
-                    <div className="absolute bottom-6 left-6 right-6 md:bottom-10 md:left-10 md:right-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
-                      <div>
-                        <div className="flex items-center gap-3">
-                          <span className="font-display text-5xl md:text-6xl text-gradient-gold font-light">
-                            {String(i + 1).padStart(2, "0")}
-                          </span>
-                          <span className="h-0.5 w-12 bg-gold/60" />
-                        </div>
-                        {step.title && (
-                          <h3 className="mt-2 font-display text-2xl md:text-4xl text-foreground font-normal">
-                            {step.title}
-                          </h3>
-                        )}
-                        {step.subtitle && (
-                          <p className="text-xs uppercase tracking-widest text-gold/80 mt-1">
-                            {step.subtitle}
-                          </p>
-                        )}
+              <GsapReveal key={step.id || i} index={i} className="group">
+                <div className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-12 lg:gap-24`}>
+                  
+                  {/* Image Section */}
+                  <div className="w-full lg:w-1/2">
+                    <Tilt3DCard maxTilt={5} scaleOnHover={1.02}>
+                      <div className="relative w-full aspect-[4/3] md:aspect-[16/10] rounded-2xl overflow-hidden border border-gold/20 shadow-2xl bg-black/40">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={step.image}
+                          alt={step.title || "Journey step"}
+                          className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-700" />
                       </div>
+                    </Tilt3DCard>
+                  </div>
+
+                  {/* Content Section */}
+                  <div className="w-full lg:w-1/2 space-y-8">
+                    <div className="flex items-center gap-6">
+                      <span className="font-display text-6xl lg:text-8xl text-transparent bg-clip-text bg-gradient-to-br from-gold via-gold/50 to-transparent opacity-60 font-light">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className={`h-[1px] flex-1 bg-gradient-to-r ${isEven ? 'from-gold/60 to-transparent' : 'from-transparent to-gold/60'}`} />
+                    </div>
+                    
+                    <div className="space-y-4">
+                      {step.title && (
+                        <h3 className="font-display text-4xl lg:text-5xl text-foreground font-normal tracking-wide">
+                          {step.title}
+                        </h3>
+                      )}
+                      
+                      {step.subtitle && (
+                        <p className="text-sm uppercase tracking-[0.25em] text-gold/80 font-medium">
+                          {step.subtitle}
+                        </p>
+                      )}
+                      
                       {step.description && (
-                        <p className="max-w-md text-sm text-foreground/80 leading-relaxed font-light backdrop-blur-sm bg-black/40 p-4 rounded-lg border border-gold/10">
+                        <p className="text-base lg:text-lg text-foreground/70 leading-relaxed font-light mt-6 max-w-xl">
                           {step.description}
                         </p>
                       )}
                     </div>
                   </div>
-                </Tilt3DCard>
+                  
+                </div>
               </GsapReveal>
             );
           })}

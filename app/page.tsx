@@ -63,7 +63,7 @@ interface HeroSlide {
 // ── Demo data ──
 const DEMO = {
   hero: {
-    eyebrow: "Est. 1985",
+    eyebrow: "Est. 2004",
     title: "Where craftsmanship meets contemporary style.",
     subtitle:
       "Bespoke tailoring and ready-to-wear collections crafted for those who value precision, quality, and timeless design.",
@@ -77,9 +77,9 @@ const DEMO = {
   about: {
     eyebrow: "Our Heritage",
     title: "Four decades of tailoring excellence.",
-    body: "Founded in 1985, Ascotex Fashions began as a small tailoring atelier with a commitment to exceptional craftsmanship. Today we create bespoke and ready-to-wear garments for discerning clients worldwide.",
+    body: "Founded in 2004, Ascotex Fashions began as a small tailoring atelier with a commitment to exceptional craftsmanship. Today we create bespoke and ready-to-wear garments for discerning clients worldwide.",
     stats: [
-      { key: "40+", label: "Years of Craft" },
+      { key: "20+", label: "Years of Craft" },
       { key: "200+", label: "Master Artisans" },
       { key: "50+", label: "Export Countries" },
       { key: "10K+", label: "Garments / Year" },
@@ -312,11 +312,10 @@ function HeroCarousel({
               key={idx}
               onClick={() => goTo(idx)}
               aria-label={`Go to slide ${idx + 1}`}
-              className={`h-1.5 rounded-full transition-all duration-500 ${
-                idx === active
-                  ? "w-10 bg-gold shadow-[0_0_12px_rgba(212,175,55,0.8)]"
-                  : "w-2 bg-foreground/30 hover:bg-foreground/60"
-              }`}
+              className={`h-1.5 rounded-full transition-all duration-500 ${idx === active
+                ? "w-10 bg-gold shadow-[0_0_12px_rgba(212,175,55,0.8)]"
+                : "w-2 bg-foreground/30 hover:bg-foreground/60"
+                }`}
             />
           ))}
         </div>
@@ -455,7 +454,7 @@ export default function Home() {
           <div className="px-7 py-5 text-center backdrop-blur-md bg-black/30 border border-gold/30 rounded-xl shadow-2xl">
             <Gem className="mx-auto h-5 w-5 text-gold animate-pulse" />
             <div className="mt-2 font-display text-3xl text-gradient-gold">
-              40+
+              20+
             </div>
             <div className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground mt-1">
               Years of Atelier Craft
@@ -578,7 +577,7 @@ export default function Home() {
                 "Bespoke Tailoring",
                 "Haute Couture Fabrics",
                 "Made to Measure",
-                "Est. 1985 Atelier",
+                "Est. 2004 Atelier",
                 "Worldwide Luxury Delivery",
               ].map((word) => (
                 <span
@@ -774,7 +773,7 @@ export default function Home() {
               <Tilt3DCard maxTilt={4} scaleOnHover={1.01}>
                 <div className="relative rounded-2xl border border-gold/40 bg-black/60 backdrop-blur-2xl p-8 sm:p-14 md:p-20 text-center shadow-2xl overflow-hidden">
                   <div className="pointer-events-none absolute -top-24 -right-24 h-48 w-48 rounded-full bg-gold/15 blur-3xl" />
-                  
+
                   <div className="w-14 h-14 rounded-full bg-gold/10 border border-gold/40 flex items-center justify-center mx-auto mb-6">
                     <Crown className="h-6 w-6 text-gold" />
                   </div>
@@ -784,7 +783,7 @@ export default function Home() {
                   </span>
 
                   <div className="font-script text-3xl md:text-5xl text-champagne/90 italic mb-2">The Story of Ascotex</div>
-                  
+
                   <h2 className="font-display text-4xl md:text-6xl text-foreground leading-tight">
                     Legacy of Excellence
                   </h2>

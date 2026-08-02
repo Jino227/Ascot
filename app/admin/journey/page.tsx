@@ -50,9 +50,9 @@ export default function AdminJourney() {
     }
   }
 
-  async function updateOrder(step: any, newOrder: number) {
+  async function updateField(step: any, field: string, value: any) {
     try {
-      await upsertJourneyStep(user!.id, { ...step, step_order: newOrder });
+      await upsertJourneyStep(user!.id, { ...step, [field]: value });
       qc.invalidateQueries({ queryKey: ["admin", "journey"] });
     } catch (err: any) {
       toast.error(err.message);
@@ -98,28 +98,46 @@ export default function AdminJourney() {
         {steps.map((step: any) => (
           <div key={step.id} className="break-inside-avoid">
             <Tilt3DCard maxTilt={6} scaleOnHover={1.02}>
-              <div className="relative group rounded-xl border border-border/60 bg-black/40 overflow-hidden shadow-lg">
+              <div className="relative group rounded-xl border border-border/60 bg-black/40 overflow-hidden shadow-lg aspect-square sm:aspect-auto sm:h-96">
                 {step.image ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={step.image} alt="" className="w-full object-cover" />
+                  <img src={step.image} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="h-40 bg-muted flex items-center justify-center text-xs text-muted-foreground">No Image</div>
+                  <div className="h-full bg-muted flex items-center justify-center text-xs text-muted-foreground">No Image</div>
                 )}
                 
-                <div className="absolute inset-0 bg-black/85 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity p-4 flex flex-col justify-between">
-                  <div className="space-y-4">
+                <div className="absolute inset-0 bg-black/90 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity p-4 flex flex-col justify-between overflow-y-auto">
+                  <div className="space-y-3">
                     <div>
-                      <Label className="text-xs uppercase tracking-wider text-muted-foreground">Step Order</Label>
+                      <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Title</Label>
+                      <Input 
+                        defaultValue={step.title || ""} 
+                        onBlur={(e) => updateField(step, "title", e.target.value)}
+                        className="mt-1 h-8 text-xs rounded-none border-border/60 bg-background/50 focus-visible:ring-gold" 
+                        placeholder="Step Title"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Description</Label>
+                      <textarea 
+                        defaultValue={step.description || ""} 
+                        onBlur={(e) => updateField(step, "description", e.target.value)}
+                        className="mt-1 flex w-full p-2 text-xs rounded-none border border-border/60 bg-background/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold min-h-[80px] resize-none text-foreground" 
+                        placeholder="Step description..."
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Step Order</Label>
                       <Input 
                         type="number" 
                         defaultValue={step.step_order} 
-                        onBlur={(e) => updateOrder(step, parseInt(e.target.value) || 0)}
-                        className="mt-1.5 h-9 text-xs rounded-none border-border/60 bg-background/50 focus-visible:ring-gold" 
+                        onBlur={(e) => updateField(step, "step_order", parseInt(e.target.value) || 0)}
+                        className="mt-1 h-8 text-xs rounded-none border-border/60 bg-background/50 focus-visible:ring-gold" 
                       />
                     </div>
                   </div>
                   
-                  <Button size="sm" variant="destructive" onClick={() => remove(step.id)} className="w-full rounded-none text-xs uppercase tracking-wider">
+                  <Button size="sm" variant="destructive" onClick={() => remove(step.id)} className="w-full rounded-none text-xs uppercase tracking-wider mt-4 shrink-0">
                     <Trash2 className="h-3.5 w-3.5 mr-2" /> Delete
                   </Button>
                 </div>
