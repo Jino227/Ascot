@@ -791,9 +791,9 @@ function HomeContent() {
 
       {/* ══════ OUR STORY SECTION ══════ */}
       {(c.our_story?.content || about.body) && (
-        <section id="our-story" className="relative py-28 md:py-40 bg-secondary/30 border-y border-gold/20 overflow-hidden">
+        <section id="our-story" className="relative py-16 sm:py-24 md:py-36 bg-secondary/30 border-y border-gold/20 overflow-hidden">
           <div className="absolute inset-0 bg-grain pointer-events-none opacity-40" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] bg-gold/[0.08] rounded-full blur-3xl animate-glow pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[24rem] sm:w-[32rem] md:w-[40rem] h-[24rem] sm:h-[32rem] md:h-[40rem] bg-gold/[0.08] rounded-full blur-3xl animate-glow pointer-events-none" />
           <Particles count={60} className="opacity-50 pointer-events-none" />
 
           <div className="container-x max-w-6xl mx-auto relative z-10">
@@ -805,39 +805,39 @@ function HomeContent() {
               custom={0}
             >
               <Tilt3DCard maxTilt={3} scaleOnHover={1.01}>
-                <div className="relative rounded-2xl border border-gold/40 bg-black/75 backdrop-blur-3xl p-8 sm:p-12 md:p-16 shadow-[0_0_60px_rgba(0,0,0,0.95)] overflow-hidden">
+                <div className="relative rounded-2xl border border-gold/40 bg-black/75 backdrop-blur-3xl p-5 sm:p-10 md:p-14 shadow-[0_0_60px_rgba(0,0,0,0.95)] overflow-hidden">
                   <div className="pointer-events-none absolute -top-24 -right-24 h-48 w-48 rounded-full bg-gold/20 blur-3xl" />
                   <div className="pointer-events-none absolute -bottom-24 -left-24 h-48 w-48 rounded-full bg-gold-deep/15 blur-3xl" />
 
-                  <div className="grid md:grid-cols-12 gap-12 lg:gap-16 items-center">
+                  <div className="grid md:grid-cols-12 gap-8 lg:gap-14 items-center">
                     {/* Left Column: Brand Badges & Quote */}
-                    <div className="md:col-span-5 space-y-6 border-b md:border-b-0 md:border-r border-gold/20 pb-8 md:pb-0 md:pr-8">
-                      <div className="w-14 h-14 rounded-full bg-gold/10 border border-gold/40 flex items-center justify-center shadow-inner">
-                        <Crown className="h-6 w-6 text-gold" />
+                    <div className="md:col-span-5 space-y-5 border-b md:border-b-0 md:border-r border-gold/20 pb-8 md:pb-0 md:pr-8">
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gold/10 border border-gold/40 flex items-center justify-center shadow-inner">
+                        <Crown className="h-5 w-5 sm:h-6 sm:w-6 text-gold" />
                       </div>
 
                       <div>
-                        <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.4em] text-gold font-medium mb-2">
-                          <Sparkles className="h-3.5 w-3.5 text-gold" /> Two Decades of Heritage
+                        <span className="inline-flex items-center gap-2 text-[10px] sm:text-xs uppercase tracking-[0.3em] sm:tracking-[0.4em] text-gold font-medium mb-2">
+                          <Sparkles className="h-3.5 w-3.5 text-gold shrink-0" /> Two Decades of Heritage
                         </span>
-                        <div className="font-script text-3xl md:text-4xl text-champagne/95 italic">The Story of Ascotex</div>
-                        <h2 className="mt-2 font-display text-4xl sm:text-5xl text-foreground leading-[1.08] tracking-tight">
+                        <div className="font-script text-2xl sm:text-3xl md:text-4xl text-champagne/95 italic">The Story of Ascotex</div>
+                        <h2 className="mt-2 font-display text-2xl sm:text-4xl md:text-5xl text-foreground leading-[1.1] tracking-tight">
                           Legacy of Excellence
                         </h2>
                       </div>
 
-                      <div className="relative rounded-xl border border-gold/30 bg-gold/5 p-5">
-                        <div className="text-2xl text-gold/50 font-display leading-none mb-1">&ldquo;</div>
-                        <p className="text-sm md:text-base text-champagne italic font-display leading-relaxed">
+                      <div className="relative rounded-xl border border-gold/30 bg-gold/5 p-4 sm:p-5">
+                        <div className="text-xl sm:text-2xl text-gold/50 font-display leading-none mb-1">&ldquo;</div>
+                        <p className="text-xs sm:text-sm md:text-base text-champagne italic font-display leading-relaxed">
                           Crafting garments that honour Savile Row traditions while defining modern haute couture.
                         </p>
                       </div>
 
-                      <div className="flex flex-wrap gap-2 pt-2">
+                      <div className="flex flex-wrap gap-2 pt-1">
                         {[{ label: "Est. 2006" }, { label: "Savile Row" }, { label: "Made to Measure" }].map((tag) => (
                           <span
                             key={tag.label}
-                            className="rounded-full border border-gold/30 bg-black/40 px-3.5 py-1 text-[10px] uppercase tracking-widest text-gold/90 font-medium"
+                            className="rounded-full border border-gold/30 bg-black/40 px-3 py-1 text-[9px] sm:text-[10px] uppercase tracking-widest text-gold/90 font-medium"
                           >
                             {tag.label}
                           </span>
@@ -847,12 +847,12 @@ function HomeContent() {
 
                     {/* Right Column: Story Text & Milestones */}
                     <div className="md:col-span-7 space-y-6">
-                      <div className="text-base sm:text-lg text-foreground/85 leading-relaxed font-light whitespace-pre-wrap first-letter:text-5xl first-letter:font-display first-letter:text-gold first-letter:mr-3 first-letter:float-left first-letter:leading-none">
+                      <div className="text-sm sm:text-base md:text-lg text-foreground/85 leading-relaxed font-light whitespace-pre-wrap sm:first-letter:text-5xl sm:first-letter:font-display sm:first-letter:text-gold sm:first-letter:mr-3 sm:first-letter:float-left sm:first-letter:leading-none">
                         {c.our_story?.content || about.body}
                       </div>
 
                       {/* Milestones bar */}
-                      <div className="grid grid-cols-3 gap-3 pt-6 border-t border-border/40 text-center">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-6 border-t border-border/40 text-center">
                         <div className="rounded-lg border border-border/40 bg-secondary/30 p-3">
                           <div className="text-xs uppercase tracking-widest text-gold font-medium">2006</div>
                           <div className="text-[10px] text-muted-foreground font-light mt-0.5">Founded on Savile Row</div>
@@ -867,14 +867,14 @@ function HomeContent() {
                         </div>
                       </div>
 
-                      <div className="pt-4">
+                      <div className="pt-2 sm:pt-4 text-center sm:text-left">
                         <Magnetic>
                           <Button
                             asChild
                             size="lg"
-                            className="rounded-full bg-accent text-accent-foreground hover:bg-gold hover:text-black text-xs uppercase tracking-[0.2em] px-8 py-5 h-auto shadow-[0_0_30px_rgba(212,175,55,0.35)] transition-all"
+                            className="w-full sm:w-auto rounded-full bg-accent text-accent-foreground hover:bg-gold hover:text-black text-xs uppercase tracking-[0.2em] px-8 py-5 h-auto shadow-[0_0_30px_rgba(212,175,55,0.35)] transition-all"
                           >
-                            <Link href="/about">
+                            <Link href="/about" className="inline-flex items-center justify-center">
                               Read Full Heritage Story <ArrowRight className="ml-2 h-4 w-4" />
                             </Link>
                           </Button>
