@@ -325,7 +325,7 @@ function HeroCarousel({
   );
 }
 
-export default function Home() {
+function HomeContent() {
   useEffect(() => {
     document.title = "Ascotex Fashions — Bespoke Craftsmanship & Haute Tailoring";
   }, []);
@@ -421,8 +421,6 @@ export default function Home() {
       transition: { duration: 0.8, delay: i * 0.12, ease: "easeOut" as const },
     }),
   };
-
-  if (isLoading) return <PageLoader />;
 
   return (
     <div className="relative overflow-x-hidden bg-background text-foreground">
@@ -941,7 +939,7 @@ export default function Home() {
         </h2>
 
         <div className="mt-16 grid gap-8 sm:grid-cols-2 md:grid-cols-3">
-          {process.pillars.map((p: any, i: number) => {
+          {(process.pillars || []).map((p: any, i: number) => {
             const Icon =
               {
                 Leaf: Leaf,
@@ -1085,4 +1083,20 @@ export default function Home() {
       </AnimatePresence>
     </div>
   );
+}
+
+export default function Home() {
+  const { isLoading: isL1 } = useQuery({ queryKey: ["website_content"], queryFn: () => getWebsiteContent() });
+  const { isLoading: isL2 } = useQuery({ queryKey: ["collections", "featured"], queryFn: () => getFeaturedCollections() });
+  const { isLoading: isL3 } = useQuery({ queryKey: ["journey_steps"], queryFn: () => getJourneySteps() });
+  const { isLoading: isL4 } = useQuery({ queryKey: ["public", "celebrities"], queryFn: () => getPublicCelebrities() });
+  const { isLoading: isL5 } = useQuery({ queryKey: ["videos"], queryFn: () => getVideos() });
+  const { isLoading: isL6 } = useQuery({ queryKey: ["videos", "featured"], queryFn: () => getFeaturedVideos() });
+  const { isLoading: isL7 } = useQuery({ queryKey: ["designs", "public", "preview"], queryFn: () => getPublicDesigns(12) });
+
+  const isLoading = isL1 || isL2 || isL3 || isL4 || isL5 || isL6 || isL7;
+
+  if (isLoading) return <PageLoader />;
+  
+  return <HomeContent />;
 }
