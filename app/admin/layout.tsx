@@ -32,7 +32,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     enabled: !!user,
   });
 
-  if (authLoading || isLoading) {
+  if (authLoading || (isLoading && !data)) {
     return (
       <div className="relative min-h-screen bg-background text-foreground flex items-center justify-center">
         <Particles count={30} className="opacity-40 pointer-events-none" />

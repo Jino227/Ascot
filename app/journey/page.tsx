@@ -44,7 +44,7 @@ export default function Journey() {
   const { data: steps = [], isLoading } = useQuery({ queryKey: ["journey_steps"], queryFn: () => getJourneySteps() });
   const displaySteps = steps;
 
-  if (isLoading) return <PageLoader />;
+  if (isLoading && steps.length === 0) return <PageLoader />;
 
   return (
     <div className="relative overflow-x-hidden bg-background text-foreground">
@@ -56,7 +56,7 @@ export default function Journey() {
             <Sparkles className="h-3.5 w-3.5 text-gold" /> Atelier Craftsmanship
           </p>
           <div className="font-script text-3xl md:text-4xl text-champagne/90 italic mt-3">From Concept to Creation</div>
-          <h1 className="mt-2 font-display text-5xl md:text-7xl max-w-3xl leading-tight">
+          <h1 className="mt-2 font-display text-3xl sm:text-5xl md:text-7xl max-w-3xl leading-tight">
             <TextReveal text="The Journey." delay={0.1} />
           </h1>
           <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed font-light">

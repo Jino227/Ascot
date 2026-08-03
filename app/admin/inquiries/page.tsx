@@ -14,7 +14,7 @@ export default function AdminInquiries() {
     queryFn: () => listInquiries(user!.id) 
   });
 
-  if (isLoading) return <div className="py-12 text-muted-foreground font-light text-sm">Loading client inquiries…</div>;
+  if (isLoading && data.length === 0) return <div className="py-12 text-muted-foreground font-light text-sm">Loading client inquiries…</div>;
 
   return (
     <div className="space-y-6">

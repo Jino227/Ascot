@@ -97,7 +97,7 @@ export default function AdminCompanyGallery() {
               <div className="flex gap-3 mt-1">
                 {CATEGORIES.map((c) => (
                   <button key={c} type="button" onClick={() => setCategory(c)}
-                    className={`px-4 py-2 text-xs uppercase tracking-wider border transition-colors ${category === c ? 'bg-accent text-accent-foreground border-accent' : 'border-border/60 text-muted-foreground hover:border-accent/50'}`}
+                    className={`px-4 py-2 text-xs uppercase tracking-wider border transition-colors ${category === c ? 'bg-accent text-accent-foreground border-accent' : 'border-border/60 text-muted-foreground hover:border-gold hover:text-gold'}`}
                   >
                     {c}
                   </button>

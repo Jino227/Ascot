@@ -53,7 +53,7 @@ export default function DesignsPage() {
             <Sparkles className="h-3.5 w-3.5 text-gold" /> The Portfolio
           </p>
           <div className="font-script text-3xl md:text-4xl text-champagne/90 italic mb-2">Curated Silhouettes & Embroidery</div>
-          <h1 className="font-display text-5xl md:text-7xl leading-[1.02]">
+          <h1 className="font-display text-3xl sm:text-5xl md:text-7xl leading-[1.02]">
             <TextReveal text="Designs & Collections" />
           </h1>
           <p className="mt-6 max-w-xl text-base md:text-lg leading-relaxed text-muted-foreground font-light">

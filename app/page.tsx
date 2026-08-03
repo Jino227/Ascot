@@ -26,6 +26,8 @@ import {
   Eye,
   Star,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -385,7 +387,42 @@ function HomeContent() {
   const [activePreviewImage, setActivePreviewImage] = useState<string | null>(
     null
   );
+  const [activePreviewIndex, setActivePreviewIndex] = useState<number>(0);
   const [playingVideo, setPlayingVideo] = useState<string | null>(null);
+
+  // ── Global mouse spotlight ──
+  const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
+
+  // ── Global scroll progress bar ──
+  const { scrollYProgress: pageScrollProgress } = useScroll();
+
+  const prevPreviewImage = useCallback(() => {
+    if (designImages.length === 0) return;
+    const newIdx =
+      (activePreviewIndex - 1 + Math.min(designImages.length, 12)) %
+      Math.min(designImages.length, 12);
+    setActivePreviewIndex(newIdx);
+    setActivePreviewImage(designImages[newIdx]?.url ?? null);
+  }, [activePreviewIndex, designImages]);
+
+  const nextPreviewImage = useCallback(() => {
+    if (designImages.length === 0) return;
+    const newIdx =
+      (activePreviewIndex + 1) % Math.min(designImages.length, 12);
+    setActivePreviewIndex(newIdx);
+    setActivePreviewImage(designImages[newIdx]?.url ?? null);
+  }, [activePreviewIndex, designImages]);
+
+  useEffect(() => {
+    if (!activePreviewImage) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setActivePreviewImage(null);
+      if (e.key === "ArrowLeft") prevPreviewImage();
+      if (e.key === "ArrowRight") nextPreviewImage();
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activePreviewImage, prevPreviewImage, nextPreviewImage]);
 
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -413,6 +450,11 @@ function HomeContent() {
     my.set((e.clientY - rect.top) / rect.height - 0.5);
   }
 
+  function handleGlobalMouseMove(e: React.MouseEvent) {
+    onHeroMouse(e);
+    setMousePos({ x: e.clientX, y: e.clientY });
+  }
+
   const sectionVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: (i: number) => ({
@@ -423,7 +465,23 @@ function HomeContent() {
   };
 
   return (
-    <div className="relative overflow-x-hidden bg-background text-foreground">
+    <div
+      onMouseMove={handleGlobalMouseMove}
+      className="relative overflow-x-hidden bg-background text-foreground"
+    >
+      {/* Top Luxury Scroll Progress Bar */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-gold/50 via-gold to-champagne z-50 origin-left shadow-[0_0_12px_rgba(212,175,55,0.8)] pointer-events-none"
+        style={{ scaleX: pageScrollProgress }}
+      />
+
+      {/* Ambient Luxury Mouse Spotlight */}
+      <div
+        className="pointer-events-none fixed inset-0 z-30 transition-opacity duration-500 opacity-60"
+        style={{
+          background: `radial-gradient(650px circle at ${mousePos.x}px ${mousePos.y}px, rgba(212, 175, 55, 0.05), transparent 80%)`,
+        }}
+      />
       {/* ══════ HERO (Cinematic 3D Experience) ══════ */}
       <section
         ref={heroRef}
@@ -503,7 +561,7 @@ function HomeContent() {
             Crafted with Passion & Precision
           </motion.div>
 
-          <h1 className="max-w-4xl font-display text-5xl leading-[1.04] md:text-8xl text-foreground tracking-tight">
+          <h1 className="max-w-4xl font-display text-3xl sm:text-5xl leading-[1.08] md:text-8xl text-foreground tracking-tight">
             <TextReveal text={hero.title} delay={0.1} />
           </h1>
 
@@ -564,9 +622,9 @@ function HomeContent() {
       </section>
 
       {/* ══════ LUXURY MARQUEE BAND ══════ */}
-      <div className="relative overflow-hidden border-y border-gold/30 bg-gradient-to-r from-espresso via-charcoal to-espresso py-6 shadow-xl">
+      <div className="relative overflow-hidden border-y border-gold/30 bg-gradient-to-r from-espresso via-charcoal to-espresso py-6 shadow-xl [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
         <div
-          className="flex w-max animate-marquee gap-0"
+          className="flex w-max animate-marquee gap-0 hover:[animation-play-state:paused]"
           style={{ ["--marquee-duration" as any]: "30s" }}
         >
           {[0, 1].map((dup) => (
@@ -689,8 +747,11 @@ function HomeContent() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.6, delay: (i % 6) * 0.08 }}
-                onClick={() => setActivePreviewImage(img.url)}
-                className="break-inside-avoid group relative overflow-hidden rounded-xl border border-border/40 cursor-pointer shadow-md"
+                onClick={() => {
+                  setActivePreviewIndex(i);
+                  setActivePreviewImage(img.url);
+                }}
+                className="break-inside-avoid group relative overflow-hidden rounded-xl border border-border/40 cursor-pointer shadow-md transition-all duration-500 hover:border-gold/60 hover:shadow-[0_0_30px_rgba(212,175,55,0.25)]"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -718,7 +779,7 @@ function HomeContent() {
             <Button
               asChild
               variant="outline"
-              className="rounded-none text-xs uppercase tracking-[0.2em] px-8 py-5 h-auto border-gold/40 hover:border-gold hover:bg-gold/10"
+              className="rounded-none text-xs uppercase tracking-[0.2em] px-8 py-5 h-auto border-gold/40 text-gold hover:border-gold hover:bg-gold hover:text-black transition-all duration-300"
             >
               <Link href="/designs">
                 View All Designs <ArrowRight className="ml-2 h-4 w-4" />
@@ -728,14 +789,14 @@ function HomeContent() {
         </div>
       </section>
 
-      {/* ══════ OUR STORY ══════ */}
+      {/* ══════ OUR STORY SECTION ══════ */}
       {(c.our_story?.content || about.body) && (
-        <section id="our-story" className="relative py-28 md:py-40 bg-secondary/30 border-y border-border/30 overflow-hidden">
+        <section id="our-story" className="relative py-28 md:py-40 bg-secondary/30 border-y border-gold/20 overflow-hidden">
           <div className="absolute inset-0 bg-grain pointer-events-none opacity-40" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[35rem] h-[35rem] bg-gold/[0.07] rounded-full blur-3xl animate-glow pointer-events-none" />
-          <Particles count={55} className="opacity-60 pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] bg-gold/[0.08] rounded-full blur-3xl animate-glow pointer-events-none" />
+          <Particles count={60} className="opacity-50 pointer-events-none" />
 
-          <div className="container-x max-w-5xl mx-auto relative z-10">
+          <div className="container-x max-w-6xl mx-auto relative z-10">
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -743,40 +804,83 @@ function HomeContent() {
               variants={sectionVariants}
               custom={0}
             >
-              <Tilt3DCard maxTilt={4} scaleOnHover={1.01}>
-                <div className="relative rounded-2xl border border-gold/40 bg-black/60 backdrop-blur-2xl p-8 sm:p-14 md:p-20 text-center shadow-2xl overflow-hidden">
-                  <div className="pointer-events-none absolute -top-24 -right-24 h-48 w-48 rounded-full bg-gold/15 blur-3xl" />
+              <Tilt3DCard maxTilt={3} scaleOnHover={1.01}>
+                <div className="relative rounded-2xl border border-gold/40 bg-black/75 backdrop-blur-3xl p-8 sm:p-12 md:p-16 shadow-[0_0_60px_rgba(0,0,0,0.95)] overflow-hidden">
+                  <div className="pointer-events-none absolute -top-24 -right-24 h-48 w-48 rounded-full bg-gold/20 blur-3xl" />
+                  <div className="pointer-events-none absolute -bottom-24 -left-24 h-48 w-48 rounded-full bg-gold-deep/15 blur-3xl" />
 
-                  <div className="w-14 h-14 rounded-full bg-gold/10 border border-gold/40 flex items-center justify-center mx-auto mb-6">
-                    <Crown className="h-6 w-6 text-gold" />
-                  </div>
+                  <div className="grid md:grid-cols-12 gap-12 lg:gap-16 items-center">
+                    {/* Left Column: Brand Badges & Quote */}
+                    <div className="md:col-span-5 space-y-6 border-b md:border-b-0 md:border-r border-gold/20 pb-8 md:pb-0 md:pr-8">
+                      <div className="w-14 h-14 rounded-full bg-gold/10 border border-gold/40 flex items-center justify-center shadow-inner">
+                        <Crown className="h-6 w-6 text-gold" />
+                      </div>
 
-                  <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.4em] text-gold font-medium mb-3">
-                    <Sparkles className="h-3.5 w-3.5 text-gold" /> Four Decades of Heritage
-                  </span>
+                      <div>
+                        <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.4em] text-gold font-medium mb-2">
+                          <Sparkles className="h-3.5 w-3.5 text-gold" /> Two Decades of Heritage
+                        </span>
+                        <div className="font-script text-3xl md:text-4xl text-champagne/95 italic">The Story of Ascotex</div>
+                        <h2 className="mt-2 font-display text-4xl sm:text-5xl text-foreground leading-[1.08] tracking-tight">
+                          Legacy of Excellence
+                        </h2>
+                      </div>
 
-                  <div className="font-script text-3xl md:text-5xl text-champagne/90 italic mb-2">The Story of Ascotex</div>
+                      <div className="relative rounded-xl border border-gold/30 bg-gold/5 p-5">
+                        <div className="text-2xl text-gold/50 font-display leading-none mb-1">&ldquo;</div>
+                        <p className="text-sm md:text-base text-champagne italic font-display leading-relaxed">
+                          Crafting garments that honour Savile Row traditions while defining modern haute couture.
+                        </p>
+                      </div>
 
-                  <h2 className="font-display text-4xl md:text-6xl text-foreground leading-tight">
-                    Legacy of Excellence
-                  </h2>
+                      <div className="flex flex-wrap gap-2 pt-2">
+                        {[{ label: "Est. 2006" }, { label: "Savile Row" }, { label: "Made to Measure" }].map((tag) => (
+                          <span
+                            key={tag.label}
+                            className="rounded-full border border-gold/30 bg-black/40 px-3.5 py-1 text-[10px] uppercase tracking-widest text-gold/90 font-medium"
+                          >
+                            {tag.label}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
 
-                  <div className="mt-8 text-base md:text-xl text-foreground/80 leading-relaxed font-light whitespace-pre-wrap max-w-3xl mx-auto">
-                    {c.our_story?.content || about.body}
-                  </div>
+                    {/* Right Column: Story Text & Milestones */}
+                    <div className="md:col-span-7 space-y-6">
+                      <div className="text-base sm:text-lg text-foreground/85 leading-relaxed font-light whitespace-pre-wrap first-letter:text-5xl first-letter:font-display first-letter:text-gold first-letter:mr-3 first-letter:float-left first-letter:leading-none">
+                        {c.our_story?.content || about.body}
+                      </div>
 
-                  <div className="mt-12">
-                    <Magnetic className="inline-block">
-                      <Button
-                        asChild
-                        size="lg"
-                        className="rounded-none bg-accent text-accent-foreground hover:bg-accent/90 text-xs uppercase tracking-[0.2em] px-10 py-6 h-auto shadow-[0_0_30px_rgba(212,175,55,0.35)]"
-                      >
-                        <Link href="/about">
-                          Read Full Heritage Story <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
-                      </Button>
-                    </Magnetic>
+                      {/* Milestones bar */}
+                      <div className="grid grid-cols-3 gap-3 pt-6 border-t border-border/40 text-center">
+                        <div className="rounded-lg border border-border/40 bg-secondary/30 p-3">
+                          <div className="text-xs uppercase tracking-widest text-gold font-medium">2006</div>
+                          <div className="text-[10px] text-muted-foreground font-light mt-0.5">Founded on Savile Row</div>
+                        </div>
+                        <div className="rounded-lg border border-border/40 bg-secondary/30 p-3">
+                          <div className="text-xs uppercase tracking-widest text-gold font-medium">20+Yrs</div>
+                          <div className="text-[10px] text-muted-foreground font-light mt-0.5">Master Tailoring</div>
+                        </div>
+                        <div className="rounded-lg border border-border/40 bg-secondary/30 p-3">
+                          <div className="text-xs uppercase tracking-widest text-gold font-medium">Global</div>
+                          <div className="text-[10px] text-muted-foreground font-light mt-0.5">Couture Clients</div>
+                        </div>
+                      </div>
+
+                      <div className="pt-4">
+                        <Magnetic>
+                          <Button
+                            asChild
+                            size="lg"
+                            className="rounded-full bg-accent text-accent-foreground hover:bg-gold hover:text-black text-xs uppercase tracking-[0.2em] px-8 py-5 h-auto shadow-[0_0_30px_rgba(212,175,55,0.35)] transition-all"
+                          >
+                            <Link href="/about">
+                              Read Full Heritage Story <ArrowRight className="ml-2 h-4 w-4" />
+                            </Link>
+                          </Button>
+                        </Magnetic>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </Tilt3DCard>
@@ -841,7 +945,7 @@ function HomeContent() {
                 <Button
                   asChild
                   variant="outline"
-                  className="rounded-none text-xs uppercase tracking-[0.2em] px-8 py-5 h-auto border-gold/40 hover:border-gold hover:bg-gold/10"
+                  className="rounded-none text-xs uppercase tracking-[0.2em] px-8 py-5 h-auto border-gold/40 text-gold hover:border-gold hover:bg-gold hover:text-black transition-all duration-300"
                 >
                   <Link href="/journey">
                     See Full Journey <ArrowRight className="ml-2 h-4 w-4" />
@@ -912,7 +1016,7 @@ function HomeContent() {
                 <Button
                   asChild
                   variant="outline"
-                  className="rounded-none text-xs uppercase tracking-[0.2em] px-8 py-5 h-auto border-gold/40 hover:border-gold hover:bg-gold/10"
+                  className="rounded-none text-xs uppercase tracking-[0.2em] px-8 py-5 h-auto border-gold/40 text-gold hover:border-gold hover:bg-gold hover:text-black transition-all duration-300"
                 >
                   <Link href="/celebrities">
                     View All Celebrities <ArrowRight className="ml-2 h-4 w-4" />
@@ -1056,28 +1160,67 @@ function HomeContent() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setActivePreviewImage(null)}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 cursor-zoom-out"
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/95 backdrop-blur-xl p-4 sm:p-8 cursor-zoom-out"
           >
+            {/* Top Bar Controls */}
+            <div
+              className="absolute top-6 left-6 right-6 flex items-center justify-between z-10"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-xs uppercase tracking-[0.3em] text-gold/80 font-mono bg-black/50 px-4 py-2 rounded-full border border-gold/30 backdrop-blur-md">
+                Design {String(activePreviewIndex + 1).padStart(2, "0")} /{" "}
+                {String(Math.min(designImages.length, 12)).padStart(2, "0")}
+              </div>
+              <button
+                onClick={() => setActivePreviewImage(null)}
+                className="p-3 rounded-full bg-black/60 border border-gold/30 text-gold hover:bg-gold hover:text-black transition-all shadow-lg"
+                aria-label="Close preview"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Modal Image Frame */}
             <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.9 }}
-              className="relative max-w-4xl max-h-[90vh] overflow-hidden rounded-xl border border-gold/40 shadow-2xl"
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.92, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="relative max-w-5xl max-h-[80vh] overflow-hidden rounded-2xl border border-gold/40 bg-black/80 shadow-[0_0_80px_rgba(212,175,55,0.2)] flex items-center justify-center"
               onClick={(e) => e.stopPropagation()}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={activePreviewImage}
-                alt="Full Preview"
-                className="w-full h-auto max-h-[85vh] object-contain"
+                alt="Ascotex Atelier Design Preview"
+                className="w-full h-auto max-h-[75vh] object-contain select-none"
               />
-              <button
-                onClick={() => setActivePreviewImage(null)}
-                className="absolute top-4 right-4 p-2 rounded-full bg-black/60 text-white hover:bg-gold hover:text-black transition-colors"
-              >
-                <X className="h-5 w-5" />
-              </button>
+
+              {/* Navigation Arrows */}
+              {Math.min(designImages.length, 12) > 1 && (
+                <>
+                  <button
+                    onClick={prevPreviewImage}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/60 border border-gold/40 text-gold hover:bg-gold hover:text-black transition-all shadow-xl"
+                    aria-label="Previous design"
+                  >
+                    <ChevronLeft className="h-6 w-6" />
+                  </button>
+                  <button
+                    onClick={nextPreviewImage}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/60 border border-gold/40 text-gold hover:bg-gold hover:text-black transition-all shadow-xl"
+                    aria-label="Next design"
+                  >
+                    <ChevronRight className="h-6 w-6" />
+                  </button>
+                </>
+              )}
             </motion.div>
+
+            {/* Keyboard shortcut hint */}
+            <div className="mt-4 text-[10px] uppercase tracking-[0.3em] text-muted-foreground/70 hidden sm:block">
+              Use ← → arrows to navigate • ESC to close
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -1086,7 +1229,7 @@ function HomeContent() {
 }
 
 export default function Home() {
-  const { isLoading: isL1 } = useQuery({ queryKey: ["website_content"], queryFn: () => getWebsiteContent() });
+  const { data: content, isLoading: isL1 } = useQuery({ queryKey: ["website_content"], queryFn: () => getWebsiteContent() });
   const { isLoading: isL2 } = useQuery({ queryKey: ["collections", "featured"], queryFn: () => getFeaturedCollections() });
   const { isLoading: isL3 } = useQuery({ queryKey: ["journey_steps"], queryFn: () => getJourneySteps() });
   const { isLoading: isL4 } = useQuery({ queryKey: ["public", "celebrities"], queryFn: () => getPublicCelebrities() });
@@ -1094,9 +1237,9 @@ export default function Home() {
   const { isLoading: isL6 } = useQuery({ queryKey: ["videos", "featured"], queryFn: () => getFeaturedVideos() });
   const { isLoading: isL7 } = useQuery({ queryKey: ["designs", "public", "preview"], queryFn: () => getPublicDesigns(12) });
 
-  const isLoading = isL1 || isL2 || isL3 || isL4 || isL5 || isL6 || isL7;
+  const isLoading = (isL1 || isL2 || isL3 || isL4 || isL5 || isL6 || isL7) && !content;
 
   if (isLoading) return <PageLoader />;
-  
+
   return <HomeContent />;
 }

@@ -78,7 +78,7 @@ export default function AdminDesigns() {
     }
   }
 
-  if (isLoading) return <div className="py-12 text-muted-foreground font-light text-sm">Loading design gallery…</div>;
+  if (isLoading && designs.length === 0) return <div className="py-12 text-muted-foreground font-light text-sm">Loading design gallery…</div>;
 
   return (
     <div className="space-y-8">

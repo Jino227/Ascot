@@ -85,7 +85,7 @@ export default function AuthPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="mt-2 rounded-none border-border/60 bg-black/50 focus-visible:ring-gold text-foreground"
+                  className="mt-2"
                 />
               </div>
 
@@ -96,7 +96,7 @@ export default function AuthPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="mt-2 rounded-none border-border/60 bg-black/50 focus-visible:ring-gold text-foreground"
+                  className="mt-2"
                 />
               </div>
 

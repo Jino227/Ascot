@@ -74,7 +74,7 @@ export default function AdminUsers() {
     }
   }
 
-  if (loadingUsers || loadingClients) return <div className="py-12 text-muted-foreground font-light text-sm">Loading accounts…</div>;
+  if ((loadingUsers || loadingClients) && users.length === 0 && clients.length === 0) return <div className="py-12 text-muted-foreground font-light text-sm">Loading accounts…</div>;
 
   return (
     <div className="space-y-6">
@@ -123,8 +123,8 @@ export default function AdminUsers() {
                   </div>
 
                   {!u.roles?.includes("admin") && (
-                    <Button size="sm" variant="outline" onClick={() => makeAdmin(u.id)} className="rounded-none text-xs border-gold/40 hover:border-gold hover:bg-gold/10 uppercase tracking-wider">
-                      <Shield className="h-3.5 w-3.5 mr-1.5 text-gold" /> Make Admin
+                    <Button size="sm" variant="outline" onClick={() => makeAdmin(u.id)} className="rounded-none text-xs border-gold/40 text-gold hover:border-gold hover:bg-gold hover:text-black uppercase tracking-wider transition-colors">
+                      <Shield className="h-3.5 w-3.5 mr-1.5" /> Make Admin
                     </Button>
                   )}
                 </div>
@@ -173,7 +173,7 @@ export default function AdminUsers() {
                     <Input name="phone" type="tel" className="rounded-none border-border/60 bg-background/50 focus-visible:ring-gold" />
                   </div>
                   <div className="pt-4 flex justify-end gap-2">
-                    <Button type="button" variant="outline" onClick={() => setOpen(false)} className="rounded-none text-xs uppercase tracking-wider border-border/60 hover:bg-white/5">Cancel</Button>
+                    <Button type="button" variant="outline" onClick={() => setOpen(false)} className="rounded-none text-xs uppercase tracking-wider border-border/60 text-muted-foreground hover:text-foreground hover:bg-white/10 hover:border-border transition-colors">Cancel</Button>
                     <Button type="submit" disabled={creatingClient} className="rounded-none bg-gold text-background hover:bg-gold/90 text-xs uppercase tracking-wider">
                       {creatingClient ? "Creating..." : "Create Client"}
                     </Button>
@@ -206,7 +206,7 @@ export default function AdminUsers() {
                     size="sm"
                     variant="outline"
                     onClick={() => toggleClientStatus(c.id, c.is_active)}
-                    className={`rounded-none text-xs uppercase tracking-wider ${c.is_active ? 'border-red-500/40 text-red-500 hover:bg-red-500/10 hover:border-red-500' : 'border-green-500/40 text-green-500 hover:bg-green-500/10 hover:border-green-500'}`}
+                    className={`rounded-none text-xs uppercase tracking-wider transition-colors ${c.is_active ? 'border-red-500/40 text-red-500 hover:bg-red-500 hover:text-white hover:border-red-500' : 'border-green-500/40 text-green-500 hover:bg-green-600 hover:text-white hover:border-green-600'}`}
                   >
                     {c.is_active ? <><PowerOff className="h-3.5 w-3.5 mr-1.5" /> Disable Access</> : <><Power className="h-3.5 w-3.5 mr-1.5" /> Enable Access</>}
                   </Button>

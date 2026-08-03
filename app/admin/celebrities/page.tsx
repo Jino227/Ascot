@@ -60,7 +60,7 @@ export default function AdminCelebrities() {
     }
   }
 
-  if (isLoading) return <div className="py-12 text-muted-foreground font-light text-sm">Loading celebrity showcase…</div>;
+  if (isLoading && celebrities.length === 0) return <div className="py-12 text-muted-foreground font-light text-sm">Loading celebrity showcase…</div>;
 
   return (
     <div className="space-y-8">
@@ -101,10 +101,10 @@ export default function AdminCelebrities() {
               </div>
             </div>
             <div className="flex items-center gap-2 self-end sm:self-center">
-              <Button variant="outline" size="sm" onClick={() => setDraft({ ...c, description: c.description ?? "", image: c.image ?? "" })} className="rounded-none text-xs border-gold/30 hover:border-gold hover:bg-gold/10">
-                <Pencil className="h-3.5 w-3.5 mr-1 text-gold" /> Edit
+              <Button variant="outline" size="sm" onClick={() => setDraft({ ...c, description: c.description ?? "", image: c.image ?? "" })} className="rounded-none text-xs border-gold/40 text-gold hover:border-gold hover:bg-gold hover:text-black transition-colors">
+                <Pencil className="h-3.5 w-3.5 mr-1" /> Edit
               </Button>
-              <Button variant="outline" size="sm" onClick={() => remove(c.id)} className="rounded-none text-xs border-destructive/40 text-destructive hover:bg-destructive/10">
+              <Button variant="outline" size="sm" onClick={() => remove(c.id)} className="rounded-none text-xs border-destructive/40 text-destructive hover:border-destructive hover:bg-destructive hover:text-destructive-foreground transition-colors">
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>
             </div>

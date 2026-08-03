@@ -272,7 +272,7 @@ function HeroEditor({ initial, onSave }: { initial: HeroContent; onSave: (data: 
             size="sm"
             disabled={uploading}
             onClick={() => fileInputRef.current?.click()}
-            className="rounded-none border-dashed text-xs uppercase tracking-widest gap-2"
+            className="rounded-none border-dashed border-gold/40 text-gold hover:border-gold hover:bg-gold hover:text-black text-xs uppercase tracking-widest gap-2 transition-colors"
           >
             {uploading ? (
               <>
@@ -411,7 +411,7 @@ function AboutEditor({ initial, onSave }: { initial: AboutContent; onSave: (data
           variant="outline"
           size="sm"
           onClick={addStat}
-          className="rounded-none border-dashed text-xs uppercase tracking-widest gap-2"
+          className="rounded-none border-dashed border-gold/40 text-gold hover:border-gold hover:bg-gold hover:text-black text-xs uppercase tracking-widest gap-2 transition-colors"
         >
           <Plus className="h-3.5 w-3.5" /> Add stat
         </Button>
@@ -540,7 +540,7 @@ function TestimonialsEditor({ initial, onSave }: { initial: TestimonialsContent;
         ))}
       </div>
 
-      <Button variant="outline" onClick={addItem} className="rounded-none border-dashed w-full text-xs uppercase tracking-widest gap-2">
+      <Button variant="outline" onClick={addItem} className="rounded-none border-dashed border-gold/40 text-gold hover:border-gold hover:bg-gold hover:text-black w-full text-xs uppercase tracking-widest gap-2 transition-colors">
         <Plus className="h-3.5 w-3.5" /> Add Testimonial
       </Button>
 
@@ -770,7 +770,7 @@ function AboutPageEditor({ initial, onSave }: { initial: AboutPageContent; onSav
               <img src={data.image} alt="preview" className="h-12 w-20 object-cover border border-border/40" />
             )}
             <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleUpload} />
-            <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => fileInputRef.current?.click()} className="rounded-none text-xs">
+            <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => fileInputRef.current?.click()} className="rounded-none border-gold/40 text-gold hover:border-gold hover:bg-gold hover:text-black text-xs transition-colors">
               {uploading ? "Uploading..." : "Upload Image"}
             </Button>
             {data.image && (
@@ -800,7 +800,7 @@ function AboutPageEditor({ initial, onSave }: { initial: AboutPageContent; onSav
             <button onClick={() => removeStat(idx)} className="shrink-0 p-1 text-muted-foreground hover:text-destructive transition-colors"><Trash2 className="h-4 w-4" /></button>
           </div>
         ))}
-        <Button type="button" variant="outline" size="sm" onClick={addStat} className="rounded-none border-dashed text-xs uppercase tracking-widest gap-2">
+        <Button type="button" variant="outline" size="sm" onClick={addStat} className="rounded-none border-dashed border-gold/40 text-gold hover:border-gold hover:bg-gold hover:text-black text-xs uppercase tracking-widest gap-2 transition-colors">
           <Plus className="h-3.5 w-3.5" /> Add stat
         </Button>
       </div>

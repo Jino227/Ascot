@@ -21,12 +21,11 @@ import { PageLoader } from "@/components/layout/PageLoader";
 export default function Contact() {
   useEffect(() => { document.title = "Contact — Ascotex Fashions"; }, []);
   const { data: content, isLoading } = useQuery({ queryKey: ["website_content"], queryFn: () => getWebsiteContent() });
-  const contact = content?.contact ?? {};
-
-  if (isLoading) return <PageLoader />;
-
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "", company: "", message: "" });
+  const contact = content?.contact ?? {};
+
+  if (isLoading && !content) return <PageLoader />;
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -62,7 +61,7 @@ export default function Contact() {
             </p>
           )}
           {contact.title && (
-            <h1 className="mt-2 font-display text-5xl md:text-7xl leading-tight">
+            <h1 className="mt-2 font-display text-3xl sm:text-5xl md:text-7xl leading-tight">
               <TextReveal text={contact.title} />
             </h1>
           )}
@@ -108,25 +107,25 @@ export default function Contact() {
                 <div className="grid gap-6 sm:grid-cols-2">
                   <div>
                     <Label htmlFor="name" className="text-xs uppercase tracking-wider text-muted-foreground">Name *</Label>
-                    <Input id="name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="mt-2 rounded-none border-border/60 bg-background/50 focus-visible:ring-gold" />
+                    <Input id="name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="mt-2" />
                   </div>
                   <div>
                     <Label htmlFor="email" className="text-xs uppercase tracking-wider text-muted-foreground">Email *</Label>
-                    <Input id="email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="mt-2 rounded-none border-border/60 bg-background/50 focus-visible:ring-gold" />
+                    <Input id="email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="mt-2" />
                   </div>
                   <div>
                     <Label htmlFor="company" className="text-xs uppercase tracking-wider text-muted-foreground">Company</Label>
-                    <Input id="company" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className="mt-2 rounded-none border-border/60 bg-background/50 focus-visible:ring-gold" />
+                    <Input id="company" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className="mt-2" />
                   </div>
                   <div>
                     <Label htmlFor="phone" className="text-xs uppercase tracking-wider text-muted-foreground">Phone</Label>
-                    <Input id="phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="mt-2 rounded-none border-border/60 bg-background/50 focus-visible:ring-gold" />
+                    <Input id="phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="mt-2" />
                   </div>
                 </div>
 
                 <div>
                   <Label htmlFor="message" className="text-xs uppercase tracking-wider text-muted-foreground">Message *</Label>
-                  <Textarea id="message" required rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="mt-2 rounded-none border-border/60 bg-background/50 focus-visible:ring-gold" />
+                  <Textarea id="message" required rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="mt-2" />
                 </div>
 
                 <Magnetic className="w-full">

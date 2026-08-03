@@ -70,7 +70,7 @@ export default function AdminJourney() {
     }
   }
 
-  if (isLoading) return <div className="py-12 text-muted-foreground font-light text-sm">Loading journey gallery…</div>;
+  if (isLoading && steps.length === 0) return <div className="py-12 text-muted-foreground font-light text-sm">Loading journey gallery…</div>;
 
   return (
     <div className="space-y-8">
