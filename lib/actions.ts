@@ -823,7 +823,7 @@ export async function getActivityLogs(userId: string) {
 export async function getPublicCelebrities() {
   const { data } = await supabaseAdmin
     .from("celebrity_showcase")
-    .select("*")
+    .select("id,image")
     .eq("is_published", true)
     .order("display_order")
     .order("created_at", { ascending: false });

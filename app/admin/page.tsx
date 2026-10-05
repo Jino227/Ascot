@@ -8,7 +8,7 @@ const adminCards = [
   { href: "/admin/designs", label: "Designs", desc: "Upload and manage public and private design portfolio.", icon: Image },
   { href: "/admin/journey", label: "Journey", desc: "Add, reorder, publish, and edit the manufacturing journey steps.", icon: Route },
   { href: "/admin/celebrities", label: "Celebrities", desc: "Manage the celebrity showcase and red carpet appearances.", icon: Star },
-  { href: "/admin/content", label: "Website Content", desc: "Edit hero text, story content, about page, and contact details.", icon: FileText },
+  { href: "/admin/content", label: "Website Content", desc: "Edit hero text, story content, infrastructure, and contact details.", icon: FileText },
   { href: "/admin/users", label: "Users", desc: "View registered accounts and manage admin role permissions.", icon: Users },
   { href: "/admin/inquiries", label: "Inquiries", desc: "Read and triage incoming client consultation inquiries.", icon: Mail },
 ];

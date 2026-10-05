@@ -81,12 +81,7 @@ interface FooterContent {
 
 interface AboutPageContent {
   title?: string;
-  subtitle?: string;
-  image?: string;
-  body1?: string;
-  body2?: string;
-  body3?: string;
-  stats?: AboutStat[];
+  facilities?: { description: string; image: string }[];
 }
 
 // Sections that still use raw JSON textarea editor
@@ -329,7 +324,7 @@ function AboutEditor({ initial, onSave }: { initial: AboutContent; onSave: (data
     setSaving(true);
     try {
       await onSave(about);
-      toast.success("About saved");
+      toast.success("Infrastructure saved");
     } catch (err: any) {
       toast.error(err.message ?? "Save failed");
     } finally {
@@ -340,26 +335,26 @@ function AboutEditor({ initial, onSave }: { initial: AboutContent; onSave: (data
   return (
     <div className="border border-border/60 bg-card p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <Label className="text-base font-display">About</Label>
-        <span className="text-xs text-muted-foreground">Company introduction &amp; stats</span>
+        <Label className="text-base font-display">Infrastructure (Homepage Section)</Label>
+        <span className="text-xs text-muted-foreground">Manufacturing facility, machinery &amp; capacity stats</span>
       </div>
 
       {/* Text fields */}
       <div className="grid gap-4">
         <div>
           <Label className="text-xs uppercase tracking-wider text-muted-foreground">Eyebrow</Label>
-          <Input className="mt-1.5 rounded-none text-sm" value={about.eyebrow} placeholder="Our Heritage"
+          <Input className="mt-1.5 rounded-none text-sm" value={about.eyebrow} placeholder="State-of-the-Art Infrastructure"
             onChange={(e) => setField("eyebrow", e.target.value)} />
         </div>
         <div>
           <Label className="text-xs uppercase tracking-wider text-muted-foreground">Title</Label>
-          <Input className="mt-1.5 rounded-none text-sm" value={about.title} placeholder="Four decades of tailoring excellence."
+          <Input className="mt-1.5 rounded-none text-sm" value={about.title} placeholder="Industrial precision meets bespoke craftsmanship."
             onChange={(e) => setField("title", e.target.value)} />
         </div>
         <div>
           <Label className="text-xs uppercase tracking-wider text-muted-foreground">Body text</Label>
           <Textarea className="mt-1.5 rounded-none text-sm" rows={4} value={about.body}
-            placeholder="Founded in 1985, Ascotex Fashions…"
+            placeholder="Powered by 45,000 sq. ft. of advanced manufacturing capabilities, high-speed multi-head computerized embroidery machines…"
             onChange={(e) => setField("body", e.target.value)} />
         </div>
       </div>
@@ -422,7 +417,7 @@ function AboutEditor({ initial, onSave }: { initial: AboutContent; onSave: (data
 
       {/* Save */}
       <Button onClick={handleSave} disabled={saving} className="rounded-none w-full sm:w-auto">
-        {saving ? "Saving…" : "Save about"}
+        {saving ? "Saving…" : "Save Infrastructure"}
       </Button>
     </div>
   );
@@ -690,7 +685,6 @@ function AboutPageEditor({ initial, onSave }: { initial: AboutPageContent; onSav
   const [data, setData] = useState<AboutPageContent>(initial);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { setData(initial); }, [JSON.stringify(initial)]); // eslint-disable-line
 
@@ -698,44 +692,38 @@ function AboutPageEditor({ initial, onSave }: { initial: AboutPageContent; onSav
     setData((d) => ({ ...d, [key]: value }));
   }
 
-  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+  function updateFacility(idx: number, field: "description" | "image", value: string) {
+    setData((d) => ({
+      ...d,
+      facilities: (d.facilities ?? []).map((facility, i) => i === idx ? { ...facility, [field]: value } : facility),
+    }));
+  }
+
+  function addFacility() {
+    setData((d) => ({ ...d, facilities: [...(d.facilities ?? []), { description: "", image: "" }] }));
+  }
+
+  async function uploadFacilityImage(idx: number, file?: File) {
     if (!file || !user) return;
     setUploading(true);
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const { url } = await uploadHeroMedia(user.id, fd); // re-use hero media logic for general images
-      setData((d) => ({ ...d, image: url }));
-      toast.success("Image uploaded");
+      const { url } = await uploadHeroMedia(user.id, fd);
+      updateFacility(idx, "image", url);
+      toast.success("Infrastructure photo uploaded");
     } catch (err: any) {
       toast.error(err.message ?? "Upload failed");
     } finally {
       setUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
     }
-  }
-
-  function addStat() {
-    setData((d) => ({ ...d, stats: [...(d.stats ?? []), { key: "", label: "" }] }));
-  }
-
-  function removeStat(idx: number) {
-    setData((d) => ({ ...d, stats: (d.stats ?? []).filter((_, i) => i !== idx) }));
-  }
-
-  function updateStat(idx: number, field: "key" | "label", value: string) {
-    setData((d) => ({
-      ...d,
-      stats: (d.stats ?? []).map((s, i) => (i === idx ? { ...s, [field]: value } : s)),
-    }));
   }
 
   async function handleSave() {
     setSaving(true);
     try {
       await onSave(data);
-      toast.success("About Page saved");
+      toast.success("Infrastructure Page saved");
     } catch (err: any) {
       toast.error(err.message ?? "Save failed");
     } finally {
@@ -746,69 +734,40 @@ function AboutPageEditor({ initial, onSave }: { initial: AboutPageContent; onSav
   return (
     <div className="rounded-xl border border-border/60 bg-black/30 backdrop-blur-md p-6 space-y-6 shadow-xl">
       <div className="flex items-center justify-between">
-        <Label className="text-base font-display">About Page</Label>
-        <span className="text-xs text-muted-foreground">Main /about page content</span>
+        <Label className="text-base font-display">Infrastructure Page</Label>
+        <span className="text-xs text-muted-foreground">Main /infrastructure page content</span>
       </div>
 
-      {/* Basic Text Fields */}
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="sm:col-span-2">
-          <Label className="text-xs uppercase tracking-wider text-muted-foreground">Title</Label>
-          <Input className="mt-1.5 rounded-none text-sm" value={data.title ?? ""} placeholder="Four decades of..."
-            onChange={(e) => setField("title", e.target.value)} />
+      <div className="space-y-4">
+        <div>
+          <Label className="text-xs uppercase tracking-wider text-muted-foreground">Page heading</Label>
+          <Input className="mt-1.5 rounded-none text-sm" value={data.title ?? ""} placeholder="Our Infrastructure" onChange={(e) => setField("title", e.target.value)} />
         </div>
-        <div className="sm:col-span-2">
-          <Label className="text-xs uppercase tracking-wider text-muted-foreground">Subtitle</Label>
-          <Textarea className="mt-1.5 rounded-none text-sm" rows={2} value={data.subtitle ?? ""} placeholder="From our founding in..."
-            onChange={(e) => setField("subtitle", e.target.value)} />
-        </div>
-        <div className="sm:col-span-2">
-          <Label className="text-xs uppercase tracking-wider text-muted-foreground">Parallax Image</Label>
-          <div className="mt-1.5 flex items-center gap-3">
-            {data.image && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={data.image} alt="preview" className="h-12 w-20 object-cover border border-border/40" />
-            )}
-            <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleUpload} />
-            <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => fileInputRef.current?.click()} className="rounded-none border-gold/40 text-gold hover:border-gold hover:bg-gold hover:text-black text-xs transition-colors">
-              {uploading ? "Uploading..." : "Upload Image"}
-            </Button>
-            {data.image && (
-              <Button type="button" variant="ghost" size="sm" onClick={() => setField("image", "")} className="rounded-none text-xs text-destructive">
-                Remove
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Paragraphs */}
-      <div className="space-y-4 pt-4 border-t border-border/40">
-        <Label className="text-xs uppercase tracking-wider text-muted-foreground">Body Paragraphs</Label>
-        <Textarea className="rounded-none text-sm" rows={3} value={data.body1 ?? ""} placeholder="Paragraph 1..." onChange={(e) => setField("body1", e.target.value)} />
-        <Textarea className="rounded-none text-sm" rows={3} value={data.body2 ?? ""} placeholder="Paragraph 2..." onChange={(e) => setField("body2", e.target.value)} />
-        <Textarea className="rounded-none text-sm" rows={3} value={data.body3 ?? ""} placeholder="Paragraph 3..." onChange={(e) => setField("body3", e.target.value)} />
-      </div>
-
-      {/* Stats */}
-      <div className="space-y-3 pt-4 border-t border-border/40">
-        <Label className="text-xs uppercase tracking-wider text-muted-foreground">Page Stats (Counters)</Label>
-        {data.stats?.map((stat, idx) => (
-          <div key={idx} className="flex items-center gap-3">
-            <Input className="h-8 rounded-none text-xs w-24" placeholder="e.g. 40" value={stat.key} onChange={(e) => updateStat(idx, "key", e.target.value)} />
-            <Input className="h-8 rounded-none text-xs flex-1" placeholder="Years of craft" value={stat.label} onChange={(e) => updateStat(idx, "label", e.target.value)} />
-            <button onClick={() => removeStat(idx)} className="shrink-0 p-1 text-muted-foreground hover:text-destructive transition-colors"><Trash2 className="h-4 w-4" /></button>
+        <Label className="text-xs uppercase tracking-wider text-muted-foreground">Photos and descriptions</Label>
+        {(data.facilities ?? []).map((facility, idx) => (
+          <div key={idx} className="space-y-3 border border-border/50 bg-background/30 p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0 flex-1 space-y-3">
+                <Textarea className="rounded-none text-sm" rows={3} value={facility.description} placeholder="Describe this facility, equipment, or capability" onChange={(e) => updateFacility(idx, "description", e.target.value)} />
+                <div className="flex items-center gap-3">
+                  {facility.image && <img src={facility.image} alt="Infrastructure preview" className="h-16 w-24 object-cover border border-border/40" />}
+                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-none border border-gold/40 px-3 py-2 text-xs text-gold hover:bg-gold hover:text-black">
+                    {uploading ? "Uploading…" : facility.image ? "Replace photo" : "Upload photo"}
+                    <input type="file" accept="image/*" className="hidden" disabled={uploading} onChange={(e) => { void uploadFacilityImage(idx, e.target.files?.[0]); e.currentTarget.value = ""; }} />
+                  </label>
+                </div>
+              </div>
+              <button type="button" onClick={() => setData((d) => ({ ...d, facilities: (d.facilities ?? []).filter((_, i) => i !== idx) }))} className="p-1 text-muted-foreground hover:text-destructive" aria-label="Remove infrastructure item"><Trash2 className="h-4 w-4" /></button>
+            </div>
           </div>
         ))}
-        <Button type="button" variant="outline" size="sm" onClick={addStat} className="rounded-none border-dashed border-gold/40 text-gold hover:border-gold hover:bg-gold hover:text-black text-xs uppercase tracking-widest gap-2 transition-colors">
-          <Plus className="h-3.5 w-3.5" /> Add stat
-        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={addFacility} className="rounded-none border-dashed border-gold/40 text-gold"><Plus className="mr-2 h-3.5 w-3.5" /> Add infrastructure photo</Button>
       </div>
 
       {/* Save Button */}
       <div className="pt-2">
         <Button onClick={handleSave} disabled={saving} className="rounded-none w-full sm:w-auto">
-          {saving ? "Saving…" : "Save About Page"}
+          {saving ? "Saving…" : "Save Infrastructure Page"}
         </Button>
       </div>
     </div>
@@ -857,8 +816,8 @@ export default function AdminContent() {
     qc.invalidateQueries({ queryKey: ["website_content"] });
   }
 
-  // Build initial about from loaded data
-  const rawAbout = (data?.about ?? {}) as Record<string, any>;
+  // Build initial infrastructure from loaded data
+  const rawAbout = ((data?.infrastructure ?? data?.about) ?? {}) as Record<string, any>;
   const initialAbout: AboutContent = {
     eyebrow: rawAbout.eyebrow ?? "",
     title: rawAbout.title ?? "",
@@ -867,6 +826,7 @@ export default function AdminContent() {
   };
 
   async function saveAbout(aboutData: AboutContent) {
+    await upsertContent(user!.id, { section_key: "infrastructure", content: aboutData });
     await upsertContent(user!.id, { section_key: "about", content: aboutData });
     qc.invalidateQueries({ queryKey: ["website_content"] });
   }
@@ -917,19 +877,17 @@ export default function AdminContent() {
     qc.invalidateQueries({ queryKey: ["website_content"] });
   }
 
-  // Build initial about page from loaded data
-  const rawAboutPage = (data?.about_page ?? {}) as Record<string, any>;
+  // Build initial infrastructure page from loaded data
+  const rawAboutPage = ((data?.infrastructure_page ?? data?.about_page) ?? {}) as Record<string, any>;
   const initialAboutPage: AboutPageContent = {
     title: rawAboutPage.title,
-    subtitle: rawAboutPage.subtitle,
-    image: rawAboutPage.image,
-    body1: rawAboutPage.body1,
-    body2: rawAboutPage.body2,
-    body3: rawAboutPage.body3,
-    stats: Array.isArray(rawAboutPage.stats) ? rawAboutPage.stats : [],
+    facilities: Array.isArray(rawAboutPage.facilities)
+      ? rawAboutPage.facilities.map((item: any) => ({ image: item.image ?? "", description: item.description ?? "" }))
+      : [],
   };
 
   async function saveAboutPage(apData: AboutPageContent) {
+    await upsertContent(user!.id, { section_key: "infrastructure_page", content: apData });
     await upsertContent(user!.id, { section_key: "about_page", content: apData });
     qc.invalidateQueries({ queryKey: ["website_content"] });
   }

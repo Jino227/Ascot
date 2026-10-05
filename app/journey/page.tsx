@@ -1,10 +1,10 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { motion } from "motion/react";
-import { ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { ArrowRight, Sparkles, X, ZoomIn } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { getJourneySteps } from "@/lib/actions";
@@ -40,9 +40,19 @@ function GsapReveal({ children, className, index = 1 }: { children: React.ReactN
 }
 
 export default function Journey() {
+  const [zoomedImage, setZoomedImage] = useState<{ src: string; alt: string } | null>(null);
   useEffect(() => { document.title = "Our Journey — Ascotex Fashions"; }, []);
   const { data: steps = [], isLoading } = useQuery({ queryKey: ["journey_steps"], queryFn: () => getJourneySteps() });
   const displaySteps = steps;
+
+  useEffect(() => {
+    if (!zoomedImage) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setZoomedImage(null);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [zoomedImage]);
 
   if (isLoading && steps.length === 0) return <PageLoader />;
 
@@ -81,7 +91,12 @@ export default function Journey() {
                   {/* Image Section */}
                   <div className="w-full lg:w-1/2">
                     <Tilt3DCard maxTilt={5} scaleOnHover={1.02}>
-                      <div className="relative w-full aspect-[4/3] md:aspect-[16/10] rounded-2xl overflow-hidden border border-gold/20 shadow-2xl bg-black/40">
+                      <button
+                        type="button"
+                        onClick={() => setZoomedImage({ src: step.image, alt: step.title || "Journey step" })}
+                        aria-label={`Zoom image${step.title ? `: ${step.title}` : ""}`}
+                        className="group/image relative block w-full aspect-[4/3] md:aspect-[16/10] rounded-2xl overflow-hidden border border-gold/20 shadow-2xl bg-black/40 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                      >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={step.image}
@@ -90,7 +105,10 @@ export default function Journey() {
                           loading="lazy"
                         />
                         <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-700" />
-                      </div>
+                        <span className="absolute bottom-4 right-4 rounded-full border border-white/30 bg-black/60 p-2 text-white opacity-0 transition-opacity group-hover/image:opacity-100 group-focus-visible/image:opacity-100" aria-hidden="true">
+                          <ZoomIn className="h-5 w-5" />
+                        </span>
+                      </button>
                     </Tilt3DCard>
                   </div>
 
@@ -149,6 +167,41 @@ export default function Journey() {
           </Magnetic>
         </div>
       </section>
+
+      <AnimatePresence>
+        {zoomedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm sm:p-8"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Expanded journey image"
+            onClick={() => setZoomedImage(null)}
+          >
+            <button
+              type="button"
+              onClick={() => setZoomedImage(null)}
+              aria-label="Close expanded image"
+              className="absolute right-4 top-4 z-10 rounded-full border border-white/30 bg-black/60 p-3 text-white transition-colors hover:bg-white hover:text-black sm:right-8 sm:top-8"
+            >
+              <X className="h-6 w-6" />
+            </button>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <motion.img
+              initial={{ scale: 0.94 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.94 }}
+              src={zoomedImage.src}
+              alt={zoomedImage.alt}
+              className="max-h-[90vh] max-w-[94vw] object-contain"
+              onClick={(event) => event.stopPropagation()}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

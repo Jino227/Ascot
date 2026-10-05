@@ -77,15 +77,26 @@ const DEMO = {
     video_url: "",
     slides: [] as HeroSlide[],
   },
-  about: {
-    eyebrow: "Our Heritage",
-    title: "Four decades of tailoring excellence.",
-    body: "Founded in 2004, Ascotex Fashions began as a small tailoring atelier with a commitment to exceptional craftsmanship. Today we create bespoke and ready-to-wear garments for discerning clients worldwide.",
+  infrastructure: {
+    eyebrow: "State-of-the-Art Infrastructure",
+    title: "Industrial precision meets bespoke craftsmanship.",
+    body: "Powered by 45,000 sq. ft. of advanced manufacturing capabilities, high-speed multi-head computerized embroidery machines, automated laser cutting, and specialized garment finishing units engineered for global luxury standards.",
     stats: [
-      { key: "20+", label: "Years of Craft" },
-      { key: "200+", label: "Master Artisans" },
-      { key: "50+", label: "Export Countries" },
-      { key: "10K+", label: "Garments / Year" },
+      { key: "45K+", label: "Sq. Ft. Facility" },
+      { key: "150+", label: "Modern Machines" },
+      { key: "500+", label: "Skilled Workforce" },
+      { key: "50K+", label: "Garments / Month" },
+    ],
+  },
+  about: {
+    eyebrow: "State-of-the-Art Infrastructure",
+    title: "Industrial precision meets bespoke craftsmanship.",
+    body: "Powered by 45,000 sq. ft. of advanced manufacturing capabilities, high-speed multi-head computerized embroidery machines, automated laser cutting, and specialized garment finishing units engineered for global luxury standards.",
+    stats: [
+      { key: "45K+", label: "Sq. Ft. Facility" },
+      { key: "150+", label: "Modern Machines" },
+      { key: "500+", label: "Skilled Workforce" },
+      { key: "50K+", label: "Garments / Month" },
     ],
   },
   process: {
@@ -377,7 +388,12 @@ function HomeContent() {
     return [];
   })();
 
-  const about = c.about ?? {};
+  const infrastructure = c.infrastructure ?? (
+    c.about && (!c.about.eyebrow || !c.about.eyebrow.toLowerCase().includes("heritage"))
+      ? c.about
+      : DEMO.infrastructure
+  );
+  const about = infrastructure;
   const process = c.process ?? {};
   const testimonials = c.testimonials?.items ?? [];
   const contact = c.contact ?? {};
@@ -650,8 +666,8 @@ function HomeContent() {
         </div>
       </div>
 
-      {/* ══════ COMPANY INTRODUCTION + STATS ══════ */}
-      <section className="container-x py-28 md:py-40 relative">
+      {/* ══════ INFRASTRUCTURE & MANUFACTURING FACILITIES ══════ */}
+      <section id="infrastructure" className="container-x py-28 md:py-40 relative">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <motion.div
             initial={{ opacity: 0, x: -40 }}
@@ -659,20 +675,39 @@ function HomeContent() {
             viewport={{ once: true }}
             transition={{ duration: 0.9 }}
           >
-            {about.eyebrow && (
-              <p className="text-xs uppercase tracking-[0.4em] text-accent/90 font-medium">
-                {about.eyebrow}
+            {infrastructure.eyebrow && (
+              <p className="text-xs uppercase tracking-[0.4em] text-accent/90 font-medium flex items-center gap-2">
+                <Sparkles className="h-3.5 w-3.5 text-gold" />
+                {infrastructure.eyebrow}
               </p>
             )}
             <h2 className="mt-6 font-display text-4xl md:text-6xl leading-[1.1] text-balance">
-              {about.title}
+              {infrastructure.title}
             </h2>
             <div className="h-px w-20 bg-gradient-to-r from-gold to-transparent my-8" />
-            {about.body && (
+            {infrastructure.body && (
               <p className="text-base md:text-lg leading-relaxed text-muted-foreground font-light max-w-xl">
-                {about.body}
+                {infrastructure.body}
               </p>
             )}
+
+            {/* Quick Infrastructure Badges */}
+            <div className="mt-8 flex flex-wrap gap-2.5">
+              {[
+                "Multi-Head Embroidery",
+                "CAD / CAM Pattern Studio",
+                "Laser Cutting",
+                "In-House Testing Lab",
+                "ISO & OEKO-TEX Standard",
+              ].map((badge) => (
+                <span
+                  key={badge}
+                  className="rounded-full border border-gold/30 bg-gold/5 px-3.5 py-1 text-[10px] uppercase tracking-wider text-gold/90 font-medium"
+                >
+                  {badge}
+                </span>
+              ))}
+            </div>
 
             <div className="mt-10 flex items-center gap-6">
               <Magnetic>
@@ -681,8 +716,8 @@ function HomeContent() {
                   variant="link"
                   className="h-auto p-0 text-accent text-xs uppercase tracking-[0.2em] group"
                 >
-                  <Link href="/about">
-                    Read Our Heritage Story
+                  <Link href="/infrastructure">
+                    Explore Our Infrastructure
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1.5 transition-transform" />
                   </Link>
                 </Button>
@@ -697,9 +732,9 @@ function HomeContent() {
             transition={{ duration: 0.9 }}
           >
             <div className="grid grid-cols-2 gap-6 md:gap-8">
-              {(about.stats || []).map((s: any, i: number) => (
+              {(infrastructure.stats || []).map((s: any, i: number) => (
                 <Tilt3DCard key={i} maxTilt={10} scaleOnHover={1.04}>
-                  <div className="group rounded-xl border border-border/60 bg-secondary/30 backdrop-blur-md p-7 text-center shadow-lg transition-all duration-500 hover:border-gold/50">
+                  <div className="group rounded-xl border border-border/60 bg-secondary/30 backdrop-blur-md p-7 text-center shadow-lg transition-all duration-500 hover:border-gold/50 hover:bg-gold/[0.04]">
                     <div className="font-display text-3xl md:text-5xl text-gradient-gold font-normal">
                       <GsapCounter value={s.key} />
                     </div>
@@ -875,8 +910,8 @@ function HomeContent() {
                             size="lg"
                             className="w-full sm:w-auto rounded-full bg-accent text-accent-foreground hover:bg-gold hover:text-black text-xs uppercase tracking-[0.2em] px-8 py-5 h-auto shadow-[0_0_30px_rgba(212,175,55,0.35)] transition-all"
                           >
-                            <Link href="/about" className="inline-flex items-center justify-center">
-                              Read Full Heritage Story <ArrowRight className="ml-2 h-4 w-4" />
+                            <Link href="/journey" className="inline-flex items-center justify-center">
+                              Explore Our Journey <ArrowRight className="ml-2 h-4 w-4" />
                             </Link>
                           </Button>
                         </Magnetic>
@@ -959,71 +994,18 @@ function HomeContent() {
       )}
 
       {/* ══════ CELEBRITY SHOWCASE ══════ */}
-      {celebrities.length > 0 && (
+      {celebrities.some((c: any) => c.image) && (
         <section className="py-28 md:py-40">
           <div className="container-x">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={sectionVariants}
-              custom={0}
-            >
-              <p className="text-xs uppercase tracking-[0.4em] text-accent/90 text-center font-medium">
-                Red Carpet &amp; Icons
-              </p>
-              <h2 className="mt-4 font-display text-4xl md:text-6xl text-center">
-                Celebrity Showcase
-              </h2>
-            </motion.div>
-
-            <div className="mt-16 grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {celebrities.map((c: any, i: number) => (
+            <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              {celebrities.filter((c: any) => c.image).map((c: any, i: number) => (
                 <Tilt3DCard key={c.id || i} maxTilt={6}>
-                  <div className="group flex flex-col rounded-xl overflow-hidden border border-border/40 bg-secondary/20 p-3 shadow-md">
-                    <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-muted mb-4">
-                      {c.image ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={c.image}
-                          alt={c.name}
-                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="h-full flex items-center justify-center text-muted-foreground/40 text-xs">
-                          No Image
-                        </div>
-                      )}
-                    </div>
-                    <div className="px-2 pb-2">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-display text-xl">{c.name}</h3>
-                        <Star className="h-4 w-4 text-gold fill-gold/20" />
-                      </div>
-                      {c.description && (
-                        <p className="mt-1 text-xs text-muted-foreground font-light line-clamp-2">
-                          {c.description}
-                        </p>
-                      )}
-                    </div>
+                  <div className="overflow-hidden rounded-xl border border-border/40 bg-secondary/20 shadow-md">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={c.image} alt="" className="aspect-[3/4] w-full object-cover" loading="lazy" />
                   </div>
                 </Tilt3DCard>
               ))}
-            </div>
-
-            <div className="text-center mt-14">
-              <Magnetic>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="rounded-none text-xs uppercase tracking-[0.2em] px-8 py-5 h-auto border-gold/40 text-gold hover:border-gold hover:bg-gold hover:text-black transition-all duration-300"
-                >
-                  <Link href="/celebrities">
-                    View All Celebrities <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </Magnetic>
             </div>
           </div>
         </section>

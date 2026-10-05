@@ -1,8 +1,8 @@
-// File: C:\Qcamy portals\ascot\Ascot\app\about\page.tsx
-import * as entry from '../../../../app/about/page.js'
+// File: C:\Users\jino2\OneDrive\Desktop\Ascot\Ascot\app\journey\page.tsx
+import * as entry from '../../../../app/journey/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
-type TEntry = typeof import('../../../../app/about/page.js')
+type TEntry = typeof import('../../../../app/journey/page.js')
 
 type SegmentParams<T extends Object = any> = T extends Record<string, any>
   ? { [K in keyof T]: T[K] extends string ? string | string[] | undefined : never }
