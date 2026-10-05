@@ -666,90 +666,6 @@ function HomeContent() {
         </div>
       </div>
 
-      {/* ══════ INFRASTRUCTURE & MANUFACTURING FACILITIES ══════ */}
-      <section id="infrastructure" className="container-x py-28 md:py-40 relative">
-        <div className="grid md:grid-cols-2 gap-16 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.9 }}
-          >
-            {infrastructure.eyebrow && (
-              <p className="text-xs uppercase tracking-[0.4em] text-accent/90 font-medium flex items-center gap-2">
-                <Sparkles className="h-3.5 w-3.5 text-gold" />
-                {infrastructure.eyebrow}
-              </p>
-            )}
-            <h2 className="mt-6 font-display text-4xl md:text-6xl leading-[1.1] text-balance">
-              {infrastructure.title}
-            </h2>
-            <div className="h-px w-20 bg-gradient-to-r from-gold to-transparent my-8" />
-            {infrastructure.body && (
-              <p className="text-base md:text-lg leading-relaxed text-muted-foreground font-light max-w-xl">
-                {infrastructure.body}
-              </p>
-            )}
-
-            {/* Quick Infrastructure Badges */}
-            <div className="mt-8 flex flex-wrap gap-2.5">
-              {[
-                "Multi-Head Embroidery",
-                "CAD / CAM Pattern Studio",
-                "Laser Cutting",
-                "In-House Testing Lab",
-                "ISO & OEKO-TEX Standard",
-              ].map((badge) => (
-                <span
-                  key={badge}
-                  className="rounded-full border border-gold/30 bg-gold/5 px-3.5 py-1 text-[10px] uppercase tracking-wider text-gold/90 font-medium"
-                >
-                  {badge}
-                </span>
-              ))}
-            </div>
-
-            <div className="mt-10 flex items-center gap-6">
-              <Magnetic>
-                <Button
-                  asChild
-                  variant="link"
-                  className="h-auto p-0 text-accent text-xs uppercase tracking-[0.2em] group"
-                >
-                  <Link href="/infrastructure">
-                    Explore Our Infrastructure
-                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1.5 transition-transform" />
-                  </Link>
-                </Button>
-              </Magnetic>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.9 }}
-          >
-            <div className="grid grid-cols-2 gap-6 md:gap-8">
-              {(infrastructure.stats || []).map((s: any, i: number) => (
-                <Tilt3DCard key={i} maxTilt={10} scaleOnHover={1.04}>
-                  <div className="group rounded-xl border border-border/60 bg-secondary/30 backdrop-blur-md p-7 text-center shadow-lg transition-all duration-500 hover:border-gold/50 hover:bg-gold/[0.04]">
-                    <div className="font-display text-3xl md:text-5xl text-gradient-gold font-normal">
-                      <GsapCounter value={s.key} />
-                    </div>
-                    <div className="mt-2 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-                      {s.label}
-                    </div>
-                    <div className="mx-auto mt-4 h-0.5 w-0 bg-gold transition-all duration-500 group-hover:w-16" />
-                  </div>
-                </Tilt3DCard>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
       {/* SVG Morphing Flourish Divider */}
       <SvgMorphDivider />
 
@@ -824,13 +740,10 @@ function HomeContent() {
         </div>
       </section>
 
-      {/* ══════ OUR STORY SECTION (Sleek Luxury Layout) ══════ */}
-      {(c.our_story?.content || about.body) && (
+      {/* ══════ OUR STORY SECTION ══════ */}
+      {(c.our_story?.content || about.body || (c.our_story?.images?.length ?? 0) > 0) && (
         <section id="our-story" className="relative py-16 sm:py-24 md:py-36 bg-secondary/30 border-y border-gold/20 overflow-hidden">
           <div className="absolute inset-0 bg-grain pointer-events-none opacity-40" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[24rem] sm:w-[32rem] md:w-[48rem] h-[24rem] sm:h-[32rem] md:h-[48rem] bg-gold/[0.08] rounded-full blur-3xl animate-glow pointer-events-none" />
-          <Particles count={65} className="opacity-50 pointer-events-none" />
-
           <div className="container-x max-w-6xl mx-auto relative z-10">
             <motion.div
               initial="hidden"
@@ -838,93 +751,59 @@ function HomeContent() {
               viewport={{ once: true }}
               variants={sectionVariants}
               custom={0}
+              className="rounded-2xl border border-gold/40 bg-black/80 p-6 shadow-[0_0_60px_rgba(0,0,0,0.6)] sm:p-10 md:p-14"
             >
-              <Tilt3DCard maxTilt={3} scaleOnHover={1.01}>
-                <div className="relative rounded-2xl border border-gold/40 bg-black/80 backdrop-blur-3xl p-6 sm:p-10 md:p-14 lg:p-16 shadow-[0_0_60px_rgba(0,0,0,0.95)] overflow-hidden">
-                  <div className="pointer-events-none absolute -top-24 -right-24 h-48 w-48 rounded-full bg-gold/20 blur-3xl" />
-                  <div className="pointer-events-none absolute -bottom-24 -left-24 h-48 w-48 rounded-full bg-gold-deep/15 blur-3xl" />
-
-                  <div className="grid md:grid-cols-12 gap-8 lg:gap-14 items-start">
-                    {/* Left Column: Sticky Brand Pillar */}
-                    <div className="md:col-span-5 md:sticky md:top-24 space-y-6 border-b md:border-b-0 md:border-r border-gold/20 pb-8 md:pb-0 md:pr-8 lg:pr-10">
-                      <div className="w-14 h-14 rounded-full bg-gold/10 border border-gold/40 flex items-center justify-center shadow-inner">
-                        <Crown className="h-6 w-6 text-gold" />
+              <div className="grid items-stretch gap-8 md:grid-cols-12 lg:gap-14">
+                {(c.our_story?.images?.length ?? 0) > 0 && (
+                  <div className="grid min-h-0 gap-4 md:col-span-5" style={{ gridTemplateRows: "repeat(" + c.our_story.images.length + ", minmax(180px, 1fr))" }}>
+                    {(c.our_story.images ?? []).map((image: any, index: number) => (
+                      <div key={image.url + "-" + index} className="min-h-[180px] overflow-hidden rounded-xl border border-gold/25 bg-secondary/30">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={image.url} alt={image.alt || ""} className="h-full min-h-[180px] w-full object-cover" loading="lazy" />
                       </div>
+                    ))}
+                  </div>
+                )}
 
-                      <div>
-                        <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.35em] text-gold font-medium mb-2">
-                          <Sparkles className="h-3.5 w-3.5 text-gold shrink-0" /> Two Decades of Heritage
-                        </span>
-                        <div className="font-script text-2xl sm:text-3xl md:text-4xl text-champagne/95 italic">The Story of Ascotex</div>
-                        <h2 className="mt-2 font-display text-3xl sm:text-4xl md:text-5xl text-foreground leading-[1.08] tracking-tight">
-                          Legacy of Excellence
-                        </h2>
-                      </div>
-
-                      <div className="relative rounded-xl border border-gold/30 bg-gold/5 p-5 shadow-sm">
-                        <div className="text-2xl text-gold/50 font-display leading-none mb-1">&ldquo;</div>
-                        <p className="text-xs sm:text-sm md:text-base text-champagne italic font-display leading-relaxed">
-                          Crafting garments that honour Savile Row traditions while defining modern haute couture.
-                        </p>
-                      </div>
-
-                      <div className="flex flex-wrap gap-2 pt-1">
-                        {[{ label: "Est. 2004" }, { label: "Savile Row" }, { label: "Made to Measure" }].map((tag) => (
-                          <span
-                            key={tag.label}
-                            className="rounded-full border border-gold/30 bg-black/40 px-3.5 py-1 text-[10px] uppercase tracking-widest text-gold/90 font-medium hover:border-gold/60 transition-colors"
-                          >
-                            {tag.label}
-                          </span>
-                        ))}
-                      </div>
+                <div className={`flex flex-col justify-center space-y-7 ${ (c.our_story?.images?.length ?? 0) > 0 ? "md:col-span-7" : "md:col-span-12"}`}>
+                  <div>
+                    <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.35em] text-gold font-medium">
+                      <Sparkles className="h-3.5 w-3.5 text-gold shrink-0" /> Our Story
+                    </span>
+                    <h2 className="mt-3 font-display text-3xl leading-tight sm:text-4xl md:text-5xl">
+                      The Story of Ascotex
+                    </h2>
+                  </div>
+                  <div className="text-sm leading-relaxed text-foreground/85 font-light whitespace-pre-wrap sm:text-base md:text-lg">
+                    {c.our_story?.content || about.body}
+                  </div>
+                  <div className="grid grid-cols-1 gap-3 border-t border-border/40 pt-6 text-center sm:grid-cols-3">
+                    <div className="rounded-xl border border-border/40 bg-secondary/30 p-4">
+                      <div className="text-xs uppercase tracking-widest text-gold font-medium">2004</div>
+                      <div className="mt-1 text-[10px] text-muted-foreground font-light">Founded on Savile Row</div>
                     </div>
-
-                    {/* Right Column: Natural Story Flow & Milestones */}
-                    <div className="md:col-span-7 space-y-8">
-                      {/* Natural Fluid Story Text (No Scrollbar) */}
-                      <div className="text-sm sm:text-base md:text-lg text-foreground/85 leading-relaxed font-light whitespace-pre-wrap sm:first-letter:text-5xl sm:first-letter:font-display sm:first-letter:text-gold sm:first-letter:mr-3 sm:first-letter:float-left sm:first-letter:leading-none">
-                        {c.our_story?.content || about.body}
-                      </div>
-
-                      {/* Milestones bar */}
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-6 border-t border-border/40 text-center">
-                        <div className="group rounded-xl border border-border/40 bg-secondary/30 p-4 transition-all duration-300 hover:border-gold/50 hover:bg-gold/5">
-                          <div className="text-xs uppercase tracking-widest text-gold font-medium">2004</div>
-                          <div className="text-[10px] text-muted-foreground font-light mt-1">Founded on Savile Row</div>
-                        </div>
-                        <div className="group rounded-xl border border-border/40 bg-secondary/30 p-4 transition-all duration-300 hover:border-gold/50 hover:bg-gold/5">
-                          <div className="text-xs uppercase tracking-widest text-gold font-medium">20+Yrs</div>
-                          <div className="text-[10px] text-muted-foreground font-light mt-1">Master Tailoring</div>
-                        </div>
-                        <div className="group rounded-xl border border-border/40 bg-secondary/30 p-4 transition-all duration-300 hover:border-gold/50 hover:bg-gold/5">
-                          <div className="text-xs uppercase tracking-widest text-gold font-medium">Global</div>
-                          <div className="text-[10px] text-muted-foreground font-light mt-1">Couture Clients</div>
-                        </div>
-                      </div>
-
-                      <div className="pt-2 text-center sm:text-left">
-                        <Magnetic>
-                          <Button
-                            asChild
-                            size="lg"
-                            className="w-full sm:w-auto rounded-full bg-accent text-accent-foreground hover:bg-gold hover:text-black text-xs uppercase tracking-[0.2em] px-8 py-5 h-auto shadow-[0_0_30px_rgba(212,175,55,0.35)] transition-all"
-                          >
-                            <Link href="/journey" className="inline-flex items-center justify-center">
-                              Explore Our Journey <ArrowRight className="ml-2 h-4 w-4" />
-                            </Link>
-                          </Button>
-                        </Magnetic>
-                      </div>
+                    <div className="rounded-xl border border-border/40 bg-secondary/30 p-4">
+                      <div className="text-xs uppercase tracking-widest text-gold font-medium">20+Yrs</div>
+                      <div className="mt-1 text-[10px] text-muted-foreground font-light">Master Tailoring</div>
+                    </div>
+                    <div className="rounded-xl border border-border/40 bg-secondary/30 p-4">
+                      <div className="text-xs uppercase tracking-widest text-gold font-medium">Global</div>
+                      <div className="mt-1 text-[10px] text-muted-foreground font-light">Couture Clients</div>
                     </div>
                   </div>
+                  <div className="pt-1">
+                    <Magnetic>
+                      <Button asChild size="lg" className="w-full rounded-full bg-accent px-8 py-5 text-xs uppercase tracking-[0.2em] text-accent-foreground transition-all hover:bg-gold hover:text-black sm:w-auto">
+                        <Link href="/journey">Explore Our Journey <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                      </Button>
+                    </Magnetic>
+                  </div>
                 </div>
-              </Tilt3DCard>
+              </div>
             </motion.div>
           </div>
         </section>
       )}
-
       {/* ══════ JOURNEY PREVIEW (The Craft Timeline) ══════ */}
       {jSteps.length > 0 && (
         <section className="relative bg-secondary/40 py-28 md:py-40 overflow-hidden">

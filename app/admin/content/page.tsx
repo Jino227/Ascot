@@ -50,6 +50,7 @@ interface AboutContent {
 
 interface OurStoryContent {
   content: string;
+  images: { url: string; alt?: string }[];
 }
 
 interface TestimonialItem {
@@ -77,6 +78,8 @@ interface FooterContent {
   email?: string;
   phone?: string;
   copyright?: string;
+  disclosure_title?: string;
+  disclosure_content?: string;
 }
 
 interface AboutPageContent {
@@ -425,8 +428,10 @@ function AboutEditor({ initial, onSave }: { initial: AboutContent; onSave: (data
 
 // ── Our Story Editor ─────────────────────────────────────────────────────────
 function OurStoryEditor({ initial, onSave }: { initial: OurStoryContent; onSave: (data: OurStoryContent) => Promise<void> }) {
+  const { user } = useAuth();
   const [story, setStory] = useState<OurStoryContent>(initial);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => { setStory(initial); }, [JSON.stringify(initial)]); // eslint-disable-line
 
@@ -442,6 +447,22 @@ function OurStoryEditor({ initial, onSave }: { initial: OurStoryContent; onSave:
     }
   }
 
+  async function addStoryImage(file?: File) {
+    if (!file || !user) return;
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const { url } = await uploadHeroMedia(user.id, formData);
+      setStory((current) => ({ ...current, images: [...(current.images ?? []), { url, alt: "" }] }));
+      toast.success("Story image uploaded");
+    } catch (error: any) {
+      toast.error(error.message ?? "Image upload failed");
+    } finally {
+      setUploading(false);
+    }
+  }
+
   return (
     <div className="border border-border/60 bg-card p-6 space-y-6">
       <Label className="text-base font-display capitalize">Our Story</Label>
@@ -451,9 +472,27 @@ function OurStoryEditor({ initial, onSave }: { initial: OurStoryContent; onSave:
           className="rounded-none text-sm leading-relaxed"
           rows={12}
           value={story.content}
-          onChange={(e) => setStory({ content: e.target.value })}
+          onChange={(e) => setStory((current) => ({ ...current, content: e.target.value }))}
           placeholder="Enter the full story here..."
         />
+      </div>
+      <div className="space-y-3">
+        <Label className="text-xs text-muted-foreground">Images shown on the left side of Our Story</Label>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {(story.images ?? []).map((image, index) => (
+            <div key={`${image.url}-${index}`} className="relative overflow-hidden border border-border/50 bg-background/40">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={image.url} alt="Story preview" className="h-48 w-full object-cover" />
+              <button type="button" onClick={() => setStory((current) => ({ ...current, images: current.images.filter((_, imageIndex) => imageIndex !== index) }))} className="absolute right-2 top-2 rounded-full bg-black/75 p-2 text-white hover:text-destructive" aria-label="Remove story image">
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+        <label className="inline-flex cursor-pointer items-center gap-2 border border-dashed border-gold/40 px-4 py-3 text-xs uppercase tracking-widest text-gold hover:bg-gold/10">
+          <Plus className="h-4 w-4" /> {uploading ? "Uploading…" : "Add story image"}
+          <input type="file" accept="image/*" className="hidden" disabled={uploading} onChange={(event) => { void addStoryImage(event.target.files?.[0]); event.currentTarget.value = ""; }} />
+        </label>
       </div>
       <Button onClick={handleSave} disabled={saving} className="rounded-none w-full sm:w-auto">
         {saving ? "Saving…" : "Save Our Story"}
@@ -671,6 +710,13 @@ function FooterEditor({ initial, onSave }: { initial: FooterContent; onSave: (da
           <Input className="mt-1.5 rounded-none text-sm" value={data.copyright ?? ""} placeholder="Made to last."
             onChange={(e) => setField("copyright", e.target.value)} />
         </div>
+        <div className="sm:col-span-2 border-t border-border/40 pt-4">
+          <Label className="text-xs uppercase tracking-wider text-muted-foreground">Footer Disclosure</Label>
+          <Input className="mt-1.5 rounded-none text-sm" value={data.disclosure_title ?? ""} placeholder="Disclosure heading (for example, Disclaimer)"
+            onChange={(e) => setField("disclosure_title", e.target.value)} />
+          <Textarea className="mt-3 rounded-none text-sm" rows={4} value={data.disclosure_content ?? ""} placeholder="Enter the disclosure text to show in the expandable footer section..."
+            onChange={(e) => setField("disclosure_content", e.target.value)} />
+        </div>
       </div>
       <Button onClick={handleSave} disabled={saving} className="rounded-none w-full sm:w-auto">
         {saving ? "Saving…" : "Save Footer"}
@@ -833,8 +879,12 @@ export default function AdminContent() {
 
   // Build initial our story from loaded data
   const rawOurStory = (data?.our_story ?? {}) as Record<string, any>;
+  const oldFacilityImages = ((data?.infrastructure_page ?? data?.about_page)?.facilities ?? [])
+    .filter((item: any) => item.image)
+    .map((item: any) => ({ url: item.image, alt: "" }));
   const initialOurStory: OurStoryContent = {
     content: rawOurStory.content ?? "",
+    images: Array.isArray(rawOurStory.images) ? rawOurStory.images : oldFacilityImages,
   };
 
   async function saveOurStory(storyData: OurStoryContent) {
@@ -870,6 +920,7 @@ export default function AdminContent() {
   const initialFooter: FooterContent = {
     description: rawFooter.description, address: rawFooter.address,
     email: rawFooter.email, phone: rawFooter.phone, copyright: rawFooter.copyright,
+    disclosure_title: rawFooter.disclosure_title, disclosure_content: rawFooter.disclosure_content,
   };
 
   async function saveFooter(fData: FooterContent) {
@@ -900,12 +951,6 @@ export default function AdminContent() {
 
       {/* Hero dedicated editor */}
       <HeroEditor initial={initialHero} onSave={saveHero} />
-
-      {/* About Section (Homepage) dedicated editor */}
-      <AboutEditor initial={initialAbout} onSave={saveAbout} />
-
-      {/* About Page dedicated editor */}
-      <AboutPageEditor initial={initialAboutPage} onSave={saveAboutPage} />
 
       {/* Our Story dedicated editor */}
       <OurStoryEditor initial={initialOurStory} onSave={saveOurStory} />

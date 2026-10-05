@@ -9,7 +9,6 @@ import { ArrowUp, ArrowUpRight } from "lucide-react";
 const links = [
   { href: "/", label: "Home" },
   { href: "/#our-story", label: "Our Story" },
-  { href: "/infrastructure", label: "Infrastructure" },
   { href: "/journey", label: "Our Journey" },
   { href: "/designs", label: "Designs" },
   { href: "/celebrities", label: "Celebrities" },
@@ -100,6 +99,22 @@ export function SiteFooter() {
           </ul>
         </motion.div>
       </div>
+
+      {footer.disclosure_content && (
+        <div className="container-x pb-8">
+          <details className="border-t border-border/40 pt-5">
+            <summary className="cursor-pointer list-none text-xs uppercase tracking-[0.2em] text-gold marker:hidden">
+              <span className="inline-flex items-center gap-2">
+                {footer.disclosure_title || "Disclosure"}
+                <span aria-hidden="true" className="text-base leading-none">+</span>
+              </span>
+            </summary>
+            <p className="mt-4 max-w-5xl whitespace-pre-line text-xs leading-relaxed text-muted-foreground">
+              {footer.disclosure_content}
+            </p>
+          </details>
+        </div>
+      )}
 
       {/* Bottom Bar */}
       <div className="border-t border-border/40 py-6">
