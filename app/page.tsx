@@ -394,6 +394,17 @@ function HomeContent() {
       : DEMO.infrastructure
   );
   const about = infrastructure;
+  const storyImages = Array.isArray(c.our_story?.images)
+    ? c.our_story.images
+    : (() => {
+        const legacyInfrastructure = c.infrastructure_page ?? c.about_page ?? {};
+        const galleryImages = Array.isArray(legacyInfrastructure.facilities)
+          ? legacyInfrastructure.facilities.filter((item: any) => item.image).map((item: any) => ({ url: item.image, alt: "" }))
+          : [];
+        return galleryImages.length > 0
+          ? galleryImages
+          : legacyInfrastructure.image ? [{ url: legacyInfrastructure.image, alt: "" }] : [];
+      })();
   const process = c.process ?? {};
   const testimonials = c.testimonials?.items ?? [];
   const contact = c.contact ?? {};
@@ -741,7 +752,7 @@ function HomeContent() {
       </section>
 
       {/* ══════ OUR STORY SECTION ══════ */}
-      {(c.our_story?.content || about.body || (c.our_story?.images?.length ?? 0) > 0) && (
+      {(c.our_story?.content || about.body || storyImages.length > 0) && (
         <section id="our-story" className="relative py-16 sm:py-24 md:py-36 bg-secondary/30 border-y border-gold/20 overflow-hidden">
           <div className="absolute inset-0 bg-grain pointer-events-none opacity-40" />
           <div className="container-x max-w-6xl mx-auto relative z-10">
@@ -754,9 +765,9 @@ function HomeContent() {
               className="rounded-2xl border border-gold/40 bg-black/80 p-6 shadow-[0_0_60px_rgba(0,0,0,0.6)] sm:p-10 md:p-14"
             >
               <div className="grid items-stretch gap-8 md:grid-cols-12 lg:gap-14">
-                {(c.our_story?.images?.length ?? 0) > 0 && (
-                  <div className="grid min-h-0 gap-4 md:col-span-5" style={{ gridTemplateRows: "repeat(" + c.our_story.images.length + ", minmax(180px, 1fr))" }}>
-                    {(c.our_story.images ?? []).map((image: any, index: number) => (
+                {storyImages.length > 0 && (
+                  <div className="grid min-h-0 gap-4 md:col-span-5" style={{ gridTemplateRows: "repeat(" + storyImages.length + ", minmax(180px, 1fr))" }}>
+                    {storyImages.map((image: any, index: number) => (
                       <div key={image.url + "-" + index} className="min-h-[180px] overflow-hidden rounded-xl border border-gold/25 bg-secondary/30">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={image.url} alt={image.alt || ""} className="h-full min-h-[180px] w-full object-cover" loading="lazy" />
@@ -765,7 +776,7 @@ function HomeContent() {
                   </div>
                 )}
 
-                <div className={`flex flex-col justify-center space-y-7 ${ (c.our_story?.images?.length ?? 0) > 0 ? "md:col-span-7" : "md:col-span-12"}`}>
+                <div className={`flex flex-col justify-center space-y-7 ${storyImages.length > 0 ? "md:col-span-7" : "md:col-span-12"}`}>
                   <div>
                     <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.35em] text-gold font-medium">
                       <Sparkles className="h-3.5 w-3.5 text-gold shrink-0" /> Our Story

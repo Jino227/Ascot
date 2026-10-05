@@ -879,12 +879,17 @@ export default function AdminContent() {
 
   // Build initial our story from loaded data
   const rawOurStory = (data?.our_story ?? {}) as Record<string, any>;
-  const oldFacilityImages = ((data?.infrastructure_page ?? data?.about_page)?.facilities ?? [])
+  const legacyInfrastructure = data?.infrastructure_page ?? data?.about_page ?? {};
+  const oldFacilityImages = (legacyInfrastructure.facilities ?? [])
     .filter((item: any) => item.image)
     .map((item: any) => ({ url: item.image, alt: "" }));
   const initialOurStory: OurStoryContent = {
     content: rawOurStory.content ?? "",
-    images: Array.isArray(rawOurStory.images) ? rawOurStory.images : oldFacilityImages,
+    images: Array.isArray(rawOurStory.images)
+      ? rawOurStory.images
+      : oldFacilityImages.length > 0
+        ? oldFacilityImages
+        : legacyInfrastructure.image ? [{ url: legacyInfrastructure.image, alt: "" }] : [],
   };
 
   async function saveOurStory(storyData: OurStoryContent) {
