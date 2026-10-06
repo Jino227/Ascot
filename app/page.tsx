@@ -72,8 +72,7 @@ const DEMO = {
       "Bespoke tailoring and ready-to-wear collections crafted for those who value precision, quality, and timeless design.",
     cta: "Explore collections",
     cta_url: "/collections",
-    image:
-      "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=2000&q=80",
+    image: "/images/atelier-hero.jpg",
     video_url: "",
     slides: [] as HeroSlide[],
   },
@@ -277,8 +276,8 @@ function HeroCarousel({
         animate={{ scale: 1 }}
         transition={{ duration: 10, ease: "linear" }}
         src={fallbackImage}
-        alt="Ascotex Showcase"
-        className="h-full w-full object-cover"
+        alt="Hand embroidery detailing on couture fabric"
+        className="h-full w-full object-cover object-[58%_center]"
       />
     );
   }
@@ -382,10 +381,19 @@ function HomeContent() {
     const s = Array.isArray(hero.slides)
       ? (hero.slides as HeroSlide[])
       : [];
-    if (s.length > 0) return s;
-    if (hero.video_url) return [{ type: "video" as const, url: hero.video_url }];
-    if (hero.image) return [{ type: "image" as const, url: hero.image }];
-    return [];
+    const providedImage: HeroSlide = {
+      type: "image",
+      url: DEMO.hero.image,
+      alt: "Hand embroidery detailing on couture fabric",
+    };
+    const configuredSlides = s.length > 0
+      ? s
+      : hero.video_url
+        ? [{ type: "video" as const, url: hero.video_url }]
+        : hero.image && hero.image !== DEMO.hero.image
+          ? [{ type: "image" as const, url: hero.image }]
+          : [];
+    return [providedImage, ...configuredSlides.filter((slide) => slide.url !== providedImage.url)];
   })();
 
   const infrastructure = c.infrastructure ?? (
@@ -513,17 +521,18 @@ function HomeContent() {
       <section
         ref={heroRef}
         onMouseMove={onHeroMouse}
-        className="relative min-h-screen flex items-center overflow-hidden py-12 md:py-20"
+        className="relative isolate min-h-screen flex items-center overflow-hidden py-12 md:py-20"
       >
         <motion.div
           style={{ scale: heroScale, x: bgX, y: bgY }}
-          className="absolute inset-0 -z-10"
+          className="pointer-events-none absolute inset-0 z-0"
         >
           <HeroCarousel slides={heroSlides} fallbackImage={DEMO.hero.image} />
           {/* Multi-layered luxury vignettes */}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/20 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#100c09]/90 via-[#17100c]/48 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-[#b17c56]/10 mix-blend-screen" />
         </motion.div>
 
         {/* Floating Gold Dust Particles */}
@@ -583,12 +592,12 @@ function HomeContent() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.9, delay: 0.2 }}
-            className="mb-3 font-script text-3xl md:text-5xl text-champagne/95 italic tracking-wide"
+            className="mb-3 font-script text-3xl md:text-5xl text-[#f3dfc5] italic tracking-wide drop-shadow-[0_2px_18px_rgba(0,0,0,0.65)]"
           >
             Crafted with Passion & Precision
           </motion.div>
 
-          <h1 className="max-w-4xl font-display text-3xl sm:text-5xl leading-[1.08] md:text-8xl text-foreground tracking-tight">
+          <h1 className="max-w-4xl font-display text-3xl sm:text-5xl leading-[1.08] md:text-8xl text-[#fffaf4] tracking-tight drop-shadow-[0_3px_22px_rgba(0,0,0,0.7)]">
             <TextReveal text={hero.title} delay={0.1} />
           </h1>
 
@@ -597,7 +606,7 @@ function HomeContent() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.5 }}
-              className="mt-6 max-w-xl text-base text-foreground/80 md:text-lg leading-relaxed font-light"
+              className="mt-6 max-w-xl text-base text-[#f7eee3]/90 md:text-lg leading-relaxed font-light drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]"
             >
               {hero.subtitle}
             </motion.p>
@@ -753,69 +762,88 @@ function HomeContent() {
 
       {/* ══════ OUR STORY SECTION ══════ */}
       {(c.our_story?.content || about.body || storyImages.length > 0) && (
-        <section id="our-story" className="relative py-16 sm:py-24 md:py-36 bg-secondary/30 border-y border-gold/20 overflow-hidden">
-          <div className="absolute inset-0 bg-grain pointer-events-none opacity-40" />
-          <div className="container-x max-w-6xl mx-auto relative z-10">
+        <section id="our-story" className="relative isolate overflow-hidden border-y border-gold/15 bg-secondary/20 py-20 sm:py-28 md:py-36">
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-grain opacity-35" />
+          <div className="pointer-events-none absolute -right-40 top-1/4 -z-10 h-[30rem] w-[30rem] rounded-full bg-gold/[0.06] blur-3xl" />
+          <div className="container-x relative mx-auto max-w-7xl">
             <motion.div
-              initial="hidden"
-              whileInView="visible"
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              variants={sectionVariants}
-              custom={0}
-              className="rounded-2xl border border-gold/40 bg-black/80 p-6 shadow-[0_0_60px_rgba(0,0,0,0.6)] sm:p-10 md:p-14"
+              transition={{ duration: 0.6 }}
+              className="mx-auto mb-10 max-w-3xl text-center sm:mb-14"
             >
-              <div className="grid items-stretch gap-8 md:grid-cols-12 lg:gap-14">
-                {storyImages.length > 0 && (
-                  <div className="grid min-h-0 gap-4 md:col-span-5" style={{ gridTemplateRows: "repeat(" + storyImages.length + ", minmax(180px, 1fr))" }}>
-                    {storyImages.map((image: any, index: number) => (
-                      <div key={image.url + "-" + index} className="min-h-[180px] overflow-hidden rounded-xl border border-gold/25 bg-secondary/30">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={image.url} alt={image.alt || ""} className="h-full min-h-[180px] w-full object-cover" loading="lazy" />
-                      </div>
-                    ))}
-                  </div>
-                )}
+              <p className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.38em] text-gold sm:text-xs">
+                <Sparkles className="h-3.5 w-3.5" /> Our Story
+              </p>
+              <h2 className="mt-4 font-display text-4xl leading-[1.05] sm:text-5xl md:text-7xl">The Story of Ascotex</h2>
+              <div className="mx-auto mt-6 h-px w-20 bg-gradient-to-r from-transparent via-gold/70 to-transparent" />
+              <p className="mt-6 font-script text-xl italic text-champagne/75 sm:text-2xl">A legacy shaped by craft</p>
+            </motion.div>
 
-                <div className={`flex flex-col justify-center space-y-7 ${storyImages.length > 0 ? "md:col-span-7" : "md:col-span-12"}`}>
-                  <div>
-                    <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.35em] text-gold font-medium">
-                      <Sparkles className="h-3.5 w-3.5 text-gold shrink-0" /> Our Story
-                    </span>
-                    <h2 className="mt-3 font-display text-3xl leading-tight sm:text-4xl md:text-5xl">
-                      The Story of Ascotex
-                    </h2>
-                  </div>
-                  <div className="text-sm leading-relaxed text-foreground/85 font-light whitespace-pre-wrap sm:text-base md:text-lg">
-                    {c.our_story?.content || about.body}
-                  </div>
-                  <div className="grid grid-cols-1 gap-3 border-t border-border/40 pt-6 text-center sm:grid-cols-3">
-                    <div className="rounded-xl border border-border/40 bg-secondary/30 p-4">
-                      <div className="text-xs uppercase tracking-widest text-gold font-medium">2004</div>
-                      <div className="mt-1 text-[10px] text-muted-foreground font-light">Founded on Savile Row</div>
-                    </div>
-                    <div className="rounded-xl border border-border/40 bg-secondary/30 p-4">
-                      <div className="text-xs uppercase tracking-widest text-gold font-medium">20+Yrs</div>
-                      <div className="mt-1 text-[10px] text-muted-foreground font-light">Master Tailoring</div>
-                    </div>
-                    <div className="rounded-xl border border-border/40 bg-secondary/30 p-4">
-                      <div className="text-xs uppercase tracking-widest text-gold font-medium">Global</div>
-                      <div className="mt-1 text-[10px] text-muted-foreground font-light">Couture Clients</div>
-                    </div>
-                  </div>
-                  <div className="pt-1">
-                    <Magnetic>
-                      <Button asChild size="lg" className="w-full rounded-full bg-accent px-8 py-5 text-xs uppercase tracking-[0.2em] text-accent-foreground transition-all hover:bg-gold hover:text-black sm:w-auto">
-                        <Link href="/journey">Explore Our Journey <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                      </Button>
-                    </Magnetic>
-                  </div>
-                </div>
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.65, delay: 0.08 }}
+              className="mx-auto mb-12 max-w-4xl rounded-2xl border border-white/10 bg-black/45 px-6 py-8 text-center shadow-xl backdrop-blur-sm sm:mb-16 sm:px-10 sm:py-10"
+            >
+              <span aria-hidden="true" className="font-display text-4xl leading-none text-gold/55">&ldquo;</span>
+              <div className="mt-2 whitespace-pre-wrap text-base leading-[1.9] text-foreground/85 font-light sm:text-lg md:text-xl">
+                {c.our_story?.content || about.body}
               </div>
             </motion.div>
+
+            {storyImages.length > 0 && (
+              <div className={"mx-auto mb-14 grid gap-4 sm:gap-5 md:mb-20 " + (storyImages.length === 1 ? "max-w-4xl grid-cols-1" : storyImages.length === 2 ? "max-w-6xl grid-cols-1 sm:grid-cols-2" : "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3")}>
+                {storyImages.map((image: any, index: number) => (
+                  <motion.div
+                    key={image.url + "-" + index}
+                    initial={{ opacity: 0, y: 22 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.15 }}
+                    transition={{ duration: 0.55, delay: Math.min((index % 6) * 0.07, 0.35), ease: "easeOut" }}
+                    whileHover={{ y: -4 }}
+                    className="group/story-image relative overflow-hidden rounded-2xl border border-gold/20 bg-gradient-to-br from-gold/[0.06] via-black/70 to-secondary/50 p-2 shadow-[0_16px_48px_rgba(0,0,0,0.3)] transition-[border-color,box-shadow] duration-500 hover:border-gold/50 hover:shadow-[0_22px_55px_rgba(0,0,0,0.45)] sm:p-3"
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-white/10 bg-black/65">
+                      <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.08),transparent_72%)] opacity-60 transition-opacity duration-500 group-hover/story-image:opacity-100" />
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={image.url} alt={image.alt || ""} className="h-full w-full object-contain p-2 transition-transform duration-700 group-hover/story-image:scale-[1.025] sm:p-3" loading="lazy" />
+                      <span className="absolute bottom-3 right-3 z-20 rounded-full border border-white/15 bg-black/70 px-2.5 py-1 font-mono text-[9px] tracking-[0.2em] text-gold/90 backdrop-blur-sm">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+
+            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-3 border-y border-gold/15 py-6 text-center sm:grid-cols-3 sm:gap-5">
+              <div className="px-4 py-3">
+                <div className="font-display text-2xl text-gold sm:text-3xl">2004</div>
+                <div className="mt-1 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Founded on Savile Row</div>
+              </div>
+              <div className="border-y border-gold/10 px-4 py-3 sm:border-x sm:border-y-0">
+                <div className="font-display text-2xl text-gold sm:text-3xl">20+Yrs</div>
+                <div className="mt-1 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Master Tailoring</div>
+              </div>
+              <div className="px-4 py-3">
+                <div className="font-display text-2xl text-gold sm:text-3xl">Global</div>
+                <div className="mt-1 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Couture Clients</div>
+              </div>
+            </div>
+
+            <div className="mt-10 text-center">
+              <Magnetic>
+                <Button asChild size="lg" className="group rounded-full border border-gold/40 bg-transparent px-8 py-5 text-xs uppercase tracking-[0.2em] text-gold transition-all hover:border-gold hover:bg-gold hover:text-black">
+                  <Link href="/journey">Explore Our Journey <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" /></Link>
+                </Button>
+              </Magnetic>
+            </div>
           </div>
         </section>
-      )}
-      {/* ══════ JOURNEY PREVIEW (The Craft Timeline) ══════ */}
+      )}      {/* ══════ JOURNEY PREVIEW (The Craft Timeline) ══════ */}
       {jSteps.length > 0 && (
         <section className="relative bg-secondary/40 py-28 md:py-40 overflow-hidden">
           <div className="absolute inset-0 bg-grain pointer-events-none opacity-50" />
