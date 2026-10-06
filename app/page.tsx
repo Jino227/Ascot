@@ -10,6 +10,9 @@ import {
   AnimatePresence,
   useMotionValue,
   useSpring,
+  useReducedMotion,
+  MotionConfig,
+  useMotionTemplate,
 } from "motion/react";
 import {
   ArrowRight,
@@ -50,6 +53,7 @@ import { FloatingGlass } from "@/components/layout/FloatingGlass";
 import { GsapCounter } from "@/components/layout/GsapCounter";
 import { Tilt3DCard } from "@/components/layout/Tilt3DCard";
 import { SvgMorphDivider } from "@/components/layout/SvgMorphDivider";
+import { LiquidAtmosphere } from "@/components/layout/LiquidAtmosphere";
 import { PageLoader } from "@/components/layout/PageLoader";
 
 if (typeof window !== "undefined") {
@@ -241,13 +245,7 @@ const DEMO = {
 // ── HeroCarousel ─────────────────────────────────────────────────────────────
 const CAROUSEL_INTERVAL = 5500;
 
-function HeroCarousel({
-  slides,
-  fallbackImage,
-}: {
-  slides: HeroSlide[];
-  fallbackImage: string;
-}) {
+function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   const [active, setActive] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -269,18 +267,7 @@ function HeroCarousel({
     timerRef.current = setInterval(advance, CAROUSEL_INTERVAL);
   }
 
-  if (slides.length === 0) {
-    return (
-      <motion.img
-        initial={{ scale: 1.1 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 10, ease: "linear" }}
-        src={fallbackImage}
-        alt="Hand embroidery detailing on couture fabric"
-        className="h-full w-full object-cover object-[58%_center]"
-      />
-    );
-  }
+  if (slides.length === 0) return null;
 
   return (
     <div className="absolute inset-0 overflow-hidden">
@@ -381,19 +368,12 @@ function HomeContent() {
     const s = Array.isArray(hero.slides)
       ? (hero.slides as HeroSlide[])
       : [];
-    const providedImage: HeroSlide = {
-      type: "image",
-      url: DEMO.hero.image,
-      alt: "Hand embroidery detailing on couture fabric",
-    };
-    const configuredSlides = s.length > 0
-      ? s
-      : hero.video_url
-        ? [{ type: "video" as const, url: hero.video_url }]
-        : hero.image && hero.image !== DEMO.hero.image
-          ? [{ type: "image" as const, url: hero.image }]
-          : [];
-    return [providedImage, ...configuredSlides.filter((slide) => slide.url !== providedImage.url)];
+    if (s.length > 0) return s;
+    if (hero.video_url) return [{ type: "video" as const, url: hero.video_url }];
+    if (hero.image) return [{ type: "image" as const, url: hero.image }];
+    return DEMO.hero.image
+      ? [{ type: "image" as const, url: DEMO.hero.image, alt: "Hand embroidery detailing on couture fabric" }]
+      : [];
   })();
 
   const infrastructure = c.infrastructure ?? (
@@ -405,14 +385,14 @@ function HomeContent() {
   const storyImages = Array.isArray(c.our_story?.images)
     ? c.our_story.images
     : (() => {
-        const legacyInfrastructure = c.infrastructure_page ?? c.about_page ?? {};
-        const galleryImages = Array.isArray(legacyInfrastructure.facilities)
-          ? legacyInfrastructure.facilities.filter((item: any) => item.image).map((item: any) => ({ url: item.image, alt: "" }))
-          : [];
-        return galleryImages.length > 0
-          ? galleryImages
-          : legacyInfrastructure.image ? [{ url: legacyInfrastructure.image, alt: "" }] : [];
-      })();
+      const legacyInfrastructure = c.infrastructure_page ?? c.about_page ?? {};
+      const galleryImages = Array.isArray(legacyInfrastructure.facilities)
+        ? legacyInfrastructure.facilities.filter((item: any) => item.image).map((item: any) => ({ url: item.image, alt: "" }))
+        : [];
+      return galleryImages.length > 0
+        ? galleryImages
+        : legacyInfrastructure.image ? [{ url: legacyInfrastructure.image, alt: "" }] : [];
+    })();
   const process = c.process ?? {};
   const testimonials = c.testimonials?.items ?? [];
   const contact = c.contact ?? {};
@@ -426,7 +406,10 @@ function HomeContent() {
   const [playingVideo, setPlayingVideo] = useState<string | null>(null);
 
   // ── Global mouse spotlight ──
-  const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
+  const reducedMotion = useReducedMotion();
+  const pointerX = useMotionValue(-1000);
+  const pointerY = useMotionValue(-1000);
+  const spotlight = useMotionTemplate`radial-gradient(650px circle at ${pointerX}px ${pointerY}px, rgba(212, 175, 55, 0.06), transparent 80%)`;
 
   // ── Global scroll progress bar ──
   const { scrollYProgress: pageScrollProgress } = useScroll();
@@ -480,14 +463,15 @@ function HomeContent() {
 
   function onHeroMouse(e: React.MouseEvent) {
     const rect = heroRef.current?.getBoundingClientRect();
-    if (!rect) return;
+    if (!rect || reducedMotion) return;
     mx.set((e.clientX - rect.left) / rect.width - 0.5);
     my.set((e.clientY - rect.top) / rect.height - 0.5);
   }
 
   function handleGlobalMouseMove(e: React.MouseEvent) {
-    onHeroMouse(e);
-    setMousePos({ x: e.clientX, y: e.clientY });
+    if (reducedMotion) return;
+    pointerX.set(e.clientX);
+    pointerY.set(e.clientY);
   }
 
   const sectionVariants = {
@@ -502,7 +486,7 @@ function HomeContent() {
   return (
     <div
       onMouseMove={handleGlobalMouseMove}
-      className="relative overflow-x-hidden bg-background text-foreground"
+      className="home-alive relative overflow-x-hidden bg-background text-foreground"
     >
       {/* Top Luxury Scroll Progress Bar */}
       <motion.div
@@ -511,29 +495,32 @@ function HomeContent() {
       />
 
       {/* Ambient Luxury Mouse Spotlight */}
-      <div
+      <motion.div
         className="pointer-events-none fixed inset-0 z-30 transition-opacity duration-500 opacity-60"
         style={{
-          background: `radial-gradient(650px circle at ${mousePos.x}px ${mousePos.y}px, rgba(212, 175, 55, 0.05), transparent 80%)`,
+          background: spotlight,
         }}
       />
       {/* ══════ HERO (Cinematic 3D Experience) ══════ */}
       <section
         ref={heroRef}
         onMouseMove={onHeroMouse}
-        className="relative isolate min-h-screen flex items-center overflow-hidden py-12 md:py-20"
+        onMouseLeave={() => { mx.set(0); my.set(0); }}
+        className="alive-hero relative isolate min-h-screen flex items-center overflow-hidden py-12 md:py-20"
       >
         <motion.div
-          style={{ scale: heroScale, x: bgX, y: bgY }}
+          style={{ scale: reducedMotion ? 1 : heroScale, x: reducedMotion ? 0 : bgX, y: reducedMotion ? 0 : bgY }}
           className="pointer-events-none absolute inset-0 z-0"
         >
-          <HeroCarousel slides={heroSlides} fallbackImage={DEMO.hero.image} />
+          <HeroCarousel slides={heroSlides} />
           {/* Multi-layered luxury vignettes */}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#100c09]/90 via-[#17100c]/48 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-[#b17c56]/10 mix-blend-screen" />
         </motion.div>
+
+        <LiquidAtmosphere />
 
         {/* Floating Gold Dust Particles */}
         <Particles count={110} className="z-[5] opacity-75" />
@@ -572,7 +559,7 @@ function HomeContent() {
         </FloatingGlass>
 
         <motion.div
-          style={{ x: textX, y: textY }}
+          style={{ x: reducedMotion ? 0 : textX, y: reducedMotion ? 0 : textY }}
           className="container-x relative z-10 pt-28 sm:pt-36 md:pt-44 lg:pt-48 pb-16 md:pb-24"
         >
           <motion.div
@@ -622,7 +609,7 @@ function HomeContent() {
               <Button
                 asChild
                 size="lg"
-                className="rounded-none bg-accent text-accent-foreground hover:bg-accent/90 text-xs uppercase tracking-[0.2em] px-8 py-6 h-auto shadow-[0_0_25px_rgba(212,175,55,0.3)] transition-all duration-300"
+                className="liquid-button bg-accent text-accent-foreground hover:bg-accent/90 text-xs uppercase tracking-[0.2em] px-8 py-6 h-auto shadow-[0_0_25px_rgba(212,175,55,0.3)] transition-all duration-300"
               >
                 <Link
                   href={
@@ -687,10 +674,10 @@ function HomeContent() {
       </div>
 
       {/* SVG Morphing Flourish Divider */}
-      <SvgMorphDivider />
+      <SvgMorphDivider className="home-divider" />
 
       {/* ══════ DESIGNS PREVIEW ══════ */}
-      <section className="container-x py-20 md:py-32">
+      <section className="container-x py-10 md:py-16">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -722,7 +709,7 @@ function HomeContent() {
                   setActivePreviewIndex(i);
                   setActivePreviewImage(img.url);
                 }}
-                className="break-inside-avoid group relative overflow-hidden rounded-xl border border-border/40 cursor-pointer shadow-md transition-all duration-500 hover:border-gold/60 hover:shadow-[0_0_30px_rgba(212,175,55,0.25)]"
+                className="alive-gallery-card break-inside-avoid group relative overflow-hidden rounded-xl border border-border/40 cursor-pointer shadow-md transition-all duration-500 hover:border-gold/60 hover:shadow-[0_0_30px_rgba(212,175,55,0.25)]"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -750,7 +737,7 @@ function HomeContent() {
             <Button
               asChild
               variant="outline"
-              className="rounded-none text-xs uppercase tracking-[0.2em] px-8 py-5 h-auto border-gold/40 text-gold hover:border-gold hover:bg-gold hover:text-black transition-all duration-300"
+              className="liquid-button text-xs uppercase tracking-[0.2em] px-8 py-5 h-auto border-gold/40 text-gold hover:border-gold hover:bg-gold hover:text-black transition-all duration-300"
             >
               <Link href="/designs">
                 View All Designs <ArrowRight className="ml-2 h-4 w-4" />
@@ -762,7 +749,7 @@ function HomeContent() {
 
       {/* ══════ OUR STORY SECTION ══════ */}
       {(c.our_story?.content || about.body || storyImages.length > 0) && (
-        <section id="our-story" className="relative isolate overflow-hidden border-y border-gold/15 bg-secondary/20 py-20 sm:py-28 md:py-36">
+        <section id="our-story" className="relative isolate overflow-hidden border-y border-gold/15 bg-secondary/20 py-10 sm:py-12 md:py-16">
           <div className="pointer-events-none absolute inset-0 -z-10 bg-grain opacity-35" />
           <div className="pointer-events-none absolute -right-40 top-1/4 -z-10 h-[30rem] w-[30rem] rounded-full bg-gold/[0.06] blur-3xl" />
           <div className="container-x relative mx-auto max-w-7xl">
@@ -845,7 +832,7 @@ function HomeContent() {
         </section>
       )}      {/* ══════ JOURNEY PREVIEW (The Craft Timeline) ══════ */}
       {jSteps.length > 0 && (
-        <section className="relative bg-secondary/40 py-28 md:py-40 overflow-hidden">
+        <section className="relative bg-secondary/40 py-10 md:py-16 overflow-hidden">
           <div className="absolute inset-0 bg-grain pointer-events-none opacity-50" />
           <div className="container-x relative">
             <motion.div
@@ -899,7 +886,7 @@ function HomeContent() {
                 <Button
                   asChild
                   variant="outline"
-                  className="rounded-none text-xs uppercase tracking-[0.2em] px-8 py-5 h-auto border-gold/40 text-gold hover:border-gold hover:bg-gold hover:text-black transition-all duration-300"
+                  className="liquid-button text-xs uppercase tracking-[0.2em] px-8 py-5 h-auto border-gold/40 text-gold hover:border-gold hover:bg-gold hover:text-black transition-all duration-300"
                 >
                   <Link href="/journey">
                     See Full Journey <ArrowRight className="ml-2 h-4 w-4" />
@@ -913,7 +900,7 @@ function HomeContent() {
 
       {/* ══════ CELEBRITY SHOWCASE ══════ */}
       {celebrities.some((c: any) => c.image) && (
-        <section className="py-28 md:py-40">
+        <section className="py-10 md:py-16">
           <div className="container-x">
             <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {celebrities.filter((c: any) => c.image).map((c: any, i: number) => (
@@ -930,10 +917,10 @@ function HomeContent() {
       )}
 
       {/* SVG Morphing Divider */}
-      <SvgMorphDivider />
+      <SvgMorphDivider className="home-divider" />
 
       {/* ══════ MANUFACTURING STRENGTH ══════ */}
-      <section className="container-x py-24 md:py-36">
+      <section className="container-x py-10 md:py-16">
         {process.eyebrow && (
           <p className="text-xs uppercase tracking-[0.4em] text-accent/90 text-center font-medium">
             {process.eyebrow}
@@ -973,7 +960,7 @@ function HomeContent() {
 
       {/* ══════ TESTIMONIALS ══════ */}
       {testimonials.length > 0 && (
-        <section className="relative bg-secondary/40 py-28 md:py-40 overflow-hidden border-t border-border/30">
+        <section className="relative bg-secondary/40 py-10 md:py-16 overflow-hidden border-t border-border/30">
           <div className="absolute inset-0 bg-grain pointer-events-none opacity-40" />
           <div className="container-x relative">
             <p className="text-xs uppercase tracking-[0.4em] text-accent/90 text-center font-medium">
@@ -1015,7 +1002,7 @@ function HomeContent() {
       )}
 
       {/* ══════ CONTACT CTA ══════ */}
-      <section className="relative py-36 md:py-52 overflow-hidden bg-grain">
+      <section className="relative py-12 md:py-20 overflow-hidden bg-grain">
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-ink via-espresso to-ink" />
         <div className="absolute top-1/4 left-1/3 w-[30rem] h-[30rem] bg-gold/[0.08] rounded-full blur-3xl animate-glow pointer-events-none" />
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gold-deep/[0.07] rounded-full blur-3xl animate-glow-slow pointer-events-none" />
@@ -1041,7 +1028,7 @@ function HomeContent() {
               <Button
                 asChild
                 size="lg"
-                className="rounded-none bg-accent text-accent-foreground hover:bg-accent/90 text-xs uppercase tracking-[0.2em] px-12 py-6 h-auto shadow-[0_0_35px_rgba(212,175,55,0.4)] transition-all duration-300"
+                className="liquid-button bg-accent text-accent-foreground hover:bg-accent/90 text-xs uppercase tracking-[0.2em] px-12 py-6 h-auto shadow-[0_0_35px_rgba(212,175,55,0.4)] transition-all duration-300"
               >
                 <Link href="/contact">
                   {contact.cta || "Get in Touch"}{" "}
@@ -1142,5 +1129,5 @@ export default function Home() {
 
   if (isLoading) return <PageLoader />;
 
-  return <HomeContent />;
+  return <MotionConfig reducedMotion="user"><HomeContent /></MotionConfig>;
 }
