@@ -10,10 +10,12 @@ export function DesignCoverflow({
   images,
   onOpen,
   className = "",
+  imageMotion = "none",
 }: {
   images: CoverflowImage[];
   onOpen: (url: string, index: number) => void;
   className?: string;
+  imageMotion?: "none" | "editorial-float";
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -54,7 +56,14 @@ export function DesignCoverflow({
               style={{ transformStyle: "preserve-3d", pointerEvents: isVisible ? "auto" : "none" }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={image.url} alt={image.alt ?? "Ascotex Design"} className="h-full w-full object-contain" loading="lazy" />
+              <motion.img
+                src={image.url}
+                alt={image.alt ?? "Ascotex Design"}
+                className="h-full w-full object-contain"
+                loading="lazy"
+                animate={imageMotion === "editorial-float" ? { scale: [1, 1.025, 1], y: [0, -5, 0] } : undefined}
+                transition={imageMotion === "editorial-float" ? { duration: 7, repeat: Infinity, ease: "easeInOut" } : undefined}
+              />
               <span className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-black/90 via-black/35 to-transparent px-5 pb-4 pt-12 text-white">
                 <span className="text-[10px] uppercase tracking-[0.28em] text-white/75">{String(index + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}</span>
                 {offset === 0 && <span className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-gold"><Eye className="h-3.5 w-3.5" /> View design</span>}

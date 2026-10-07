@@ -7,12 +7,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { getPublicDesigns, getDesignsForUser } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
-import { Lock, X, Crown, ArrowRight, Sparkles } from "lucide-react";
+import { Lock, X, Crown, ArrowRight, Eye, Sparkles } from "lucide-react";
 import { TextReveal } from "@/components/layout/TextReveal";
 import { Particles } from "@/components/layout/Particles";
 import { Magnetic } from "@/components/layout/Magnetic";
 import { SvgMorphDivider } from "@/components/layout/SvgMorphDivider";
-import { DesignCoverflow } from "@/components/layout/DesignCoverflow";
 
 export default function DesignsPage() {
   const { user, loading: authLoading } = useAuth();
@@ -80,7 +79,7 @@ export default function DesignsPage() {
                 </div>
                 <span className="text-xs tracking-wider text-muted-foreground uppercase">{publicImages.length} Pieces</span>
               </div>
-              <DesignCoverflow images={publicImages} onOpen={(url) => setLightbox(url)} />
+              <ImageGallery images={publicImages} onOpen={setLightbox} />
             </section>
           )}
 
@@ -97,7 +96,7 @@ export default function DesignsPage() {
                   </div>
                   <span className="text-xs tracking-wider text-gold/80 uppercase">{privateImages.length} Private Pieces</span>
                 </div>
-                <DesignCoverflow images={privateImages} onOpen={(url) => setLightbox(url)} />
+                <ImageGallery images={privateImages} onOpen={setLightbox} premium />
               </div>
             </section>
           )}
@@ -165,6 +164,58 @@ export default function DesignsPage() {
         )}
       </AnimatePresence>
     </main>
+  );
+}
+
+function ImageGallery({
+  images,
+  onOpen,
+  premium = false,
+}: {
+  images: any[];
+  onOpen: (url: string) => void;
+  premium?: boolean;
+}) {
+  return (
+    <div className="columns-1 gap-5 space-y-5 sm:columns-2 lg:columns-3 xl:columns-4">
+      {images.map((image, index) => (
+        <motion.article
+          key={image.id ?? image.url ?? index}
+          initial={{ opacity: 0, y: 36, scale: 0.97 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.65, delay: (index % 8) * 0.07, ease: [0.22, 1, 0.36, 1] }}
+          whileHover={{ y: -7, rotate: index % 2 === 0 ? 0.5 : -0.5 }}
+          className="group mb-5 break-inside-avoid"
+        >
+          <button
+            type="button"
+            onClick={() => onOpen(image.url)}
+            aria-label={`Open ${image.alt || "design"} preview`}
+            className="relative block w-full cursor-zoom-in overflow-hidden rounded-2xl border border-border/50 bg-card text-left shadow-[0_14px_40px_rgba(0,0,0,0.25)] transition-[border-color,box-shadow] duration-500 hover:border-gold/60 hover:shadow-[0_22px_55px_rgba(0,0,0,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={image.url}
+              alt={image.alt ?? "Ascotex Design"}
+              loading="lazy"
+              className="h-auto w-full transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+            />
+            <span className="absolute inset-0 flex items-end bg-gradient-to-t from-black/75 via-transparent to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <span className="flex w-full items-center justify-between text-white">
+                <span className="text-[10px] uppercase tracking-[0.22em]">View design</span>
+                <Eye className="h-4 w-4 text-gold" />
+              </span>
+            </span>
+            {premium && (
+              <span className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-gold/70 bg-black/75 px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.18em] text-gold backdrop-blur-sm">
+                <Crown className="h-3 w-3" /> Exclusive
+              </span>
+            )}
+          </button>
+        </motion.article>
+      ))}
+    </div>
   );
 }
 
