@@ -126,8 +126,19 @@ function HeroEditor({ initial, onSave }: { initial: HeroContent; onSave: (data: 
     }
   }
 
-  function removeSlide(idx: number) {
-    setHero((h) => ({ ...h, slides: h.slides.filter((_, i) => i !== idx) }));
+  async function removeSlide(idx: number) {
+    const nextHero = { ...hero, slides: hero.slides.filter((_, i) => i !== idx) };
+    setHero(nextHero);
+    setSaving(true);
+    try {
+      await onSave(nextHero);
+      toast.success("Background slide deleted");
+    } catch (err: any) {
+      setHero(hero);
+      toast.error(err.message ?? "Could not delete background slide");
+    } finally {
+      setSaving(false);
+    }
   }
 
   function updateSlideAlt(idx: number, alt: string) {
@@ -243,7 +254,10 @@ function HeroEditor({ initial, onSave }: { initial: HeroContent; onSave: (data: 
                 </div>
                 {/* Delete */}
                 <button
-                  onClick={() => removeSlide(idx)}
+                  type="button"
+                  onClick={() => void removeSlide(idx)}
+                  disabled={saving}
+                  aria-label={`Delete ${slide.type} background slide`}
                   className="mt-0.5 shrink-0 rounded p-1 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                   title="Remove slide"
                 >

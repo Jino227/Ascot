@@ -53,6 +53,7 @@ import { FloatingGlass } from "@/components/layout/FloatingGlass";
 import { GsapCounter } from "@/components/layout/GsapCounter";
 import { Tilt3DCard } from "@/components/layout/Tilt3DCard";
 import { SvgMorphDivider } from "@/components/layout/SvgMorphDivider";
+import { DesignCoverflow } from "@/components/layout/DesignCoverflow";
 import { LiquidAtmosphere } from "@/components/layout/LiquidAtmosphere";
 import { PageLoader } from "@/components/layout/PageLoader";
 
@@ -697,38 +698,14 @@ function HomeContent() {
         </motion.div>
 
         {designImages.length > 0 && (
-          <div className="mt-16 columns-2 sm:columns-3 lg:columns-4 gap-4 space-y-4">
-            {designImages.slice(0, 12).map((img: any, i: number) => (
-              <motion.div
-                key={img.id ?? i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.6, delay: (i % 6) * 0.08 }}
-                onClick={() => {
-                  setActivePreviewIndex(i);
-                  setActivePreviewImage(img.url);
-                }}
-                className="alive-gallery-card break-inside-avoid group relative overflow-hidden rounded-xl border border-border/40 cursor-pointer shadow-md transition-all duration-500 hover:border-gold/60 hover:shadow-[0_0_30px_rgba(212,175,55,0.25)]"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={img.url}
-                  alt={img.alt ?? "Ascotex Design"}
-                  className="w-full object-cover transition-transform duration-700 group-hover:scale-108"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                  <div className="flex items-center justify-between w-full text-white">
-                    <span className="text-xs font-light tracking-wider">
-                      View Design
-                    </span>
-                    <Eye className="h-4 w-4 text-gold" />
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          <DesignCoverflow
+            className="mt-16"
+            images={designImages.slice(0, 12)}
+            onOpen={(url, index) => {
+              setActivePreviewIndex(index);
+              setActivePreviewImage(url);
+            }}
+          />
         )}
 
         {/* View all button */}
