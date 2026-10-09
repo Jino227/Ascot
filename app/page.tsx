@@ -12,7 +12,6 @@ import {
   useSpring,
   useReducedMotion,
   MotionConfig,
-  useMotionTemplate,
 } from "motion/react";
 import {
   ArrowRight,
@@ -54,7 +53,6 @@ import { GsapCounter } from "@/components/layout/GsapCounter";
 import { Tilt3DCard } from "@/components/layout/Tilt3DCard";
 import { SvgMorphDivider } from "@/components/layout/SvgMorphDivider";
 import { DesignCoverflow } from "@/components/layout/DesignCoverflow";
-import { LiquidAtmosphere } from "@/components/layout/LiquidAtmosphere";
 import { PageLoader } from "@/components/layout/PageLoader";
 
 if (typeof window !== "undefined") {
@@ -271,16 +269,12 @@ function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   if (slides.length === 0) return null;
 
   return (
-    <div className="absolute inset-0 overflow-hidden">
+    <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
       <AnimatePresence initial={false}>
         {slides.map((slide, idx) =>
           idx === active ? (
-            <motion.div
+            <div
               key={`${slide.url}-${idx}`}
-              initial={{ opacity: 0, scale: 1.08 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.4, ease: [0.25, 1, 0.5, 1] }}
               className="absolute inset-0"
             >
               {slide.type === "video" ? (
@@ -290,17 +284,17 @@ function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                   muted
                   loop
                   playsInline
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-contain"
                 />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={slide.url}
                   alt={slide.alt ?? "Ascotex Heritage"}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-contain"
                 />
               )}
-            </motion.div>
+            </div>
           ) : null
         )}
       </AnimatePresence>
@@ -406,11 +400,7 @@ function HomeContent() {
   const [activePreviewIndex, setActivePreviewIndex] = useState<number>(0);
   const [playingVideo, setPlayingVideo] = useState<string | null>(null);
 
-  // ── Global mouse spotlight ──
   const reducedMotion = useReducedMotion();
-  const pointerX = useMotionValue(-1000);
-  const pointerY = useMotionValue(-1000);
-  const spotlight = useMotionTemplate`radial-gradient(650px circle at ${pointerX}px ${pointerY}px, rgba(212, 175, 55, 0.06), transparent 80%)`;
 
   // ── Global scroll progress bar ──
   const { scrollYProgress: pageScrollProgress } = useScroll();
@@ -444,21 +434,12 @@ function HomeContent() {
   }, [activePreviewImage, prevPreviewImage, nextPreviewImage]);
 
   const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-
-  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.12]);
-
   // ── Mouse parallax for hero ──
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
   const sx = useSpring(mx, { stiffness: 70, damping: 20 });
   const sy = useSpring(my, { stiffness: 70, damping: 20 });
 
-  const bgX = useTransform(sx, [-0.5, 0.5], ["-16px", "16px"]);
-  const bgY = useTransform(sy, [-0.5, 0.5], ["-16px", "16px"]);
   const textX = useTransform(sx, [-0.5, 0.5], ["8px", "-8px"]);
   const textY = useTransform(sy, [-0.5, 0.5], ["8px", "-8px"]);
 
@@ -467,12 +448,6 @@ function HomeContent() {
     if (!rect || reducedMotion) return;
     mx.set((e.clientX - rect.left) / rect.width - 0.5);
     my.set((e.clientY - rect.top) / rect.height - 0.5);
-  }
-
-  function handleGlobalMouseMove(e: React.MouseEvent) {
-    if (reducedMotion) return;
-    pointerX.set(e.clientX);
-    pointerY.set(e.clientY);
   }
 
   const sectionVariants = {
@@ -486,7 +461,6 @@ function HomeContent() {
 
   return (
     <div
-      onMouseMove={handleGlobalMouseMove}
       className="home-alive relative overflow-x-hidden bg-background text-foreground"
     >
       {/* Top Luxury Scroll Progress Bar */}
@@ -495,13 +469,6 @@ function HomeContent() {
         style={{ scaleX: pageScrollProgress }}
       />
 
-      {/* Ambient Luxury Mouse Spotlight */}
-      <motion.div
-        className="pointer-events-none fixed inset-0 z-30 transition-opacity duration-500 opacity-60"
-        style={{
-          background: spotlight,
-        }}
-      />
       {/* ══════ HERO (Cinematic 3D Experience) ══════ */}
       <section
         ref={heroRef}
@@ -510,21 +477,10 @@ function HomeContent() {
         className="alive-hero relative isolate min-h-screen flex items-center overflow-hidden py-12 md:py-20"
       >
         <motion.div
-          style={{ scale: reducedMotion ? 1 : heroScale, x: reducedMotion ? 0 : bgX, y: reducedMotion ? 0 : bgY }}
           className="pointer-events-none absolute inset-0 z-0"
         >
           <HeroCarousel slides={heroSlides} />
-          {/* Multi-layered luxury vignettes */}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#100c09]/90 via-[#17100c]/48 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-[#b17c56]/10 mix-blend-screen" />
         </motion.div>
-
-        <LiquidAtmosphere />
-
-        {/* Floating Gold Dust Particles */}
-        <Particles count={110} className="z-[5] opacity-75" />
 
         {/* Floating Glass Badges with interactive 3D feel */}
         <FloatingGlass
@@ -580,12 +536,12 @@ function HomeContent() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.9, delay: 0.2 }}
-            className="mb-3 font-script text-3xl md:text-5xl text-[#f3dfc5] italic tracking-wide drop-shadow-[0_2px_18px_rgba(0,0,0,0.65)]"
+            className="mb-3 font-script text-3xl md:text-5xl text-foreground italic tracking-wide"
           >
             Crafted with Passion & Precision
           </motion.div>
 
-          <h1 className="max-w-4xl font-display text-3xl sm:text-5xl leading-[1.08] md:text-8xl text-[#fffaf4] tracking-tight drop-shadow-[0_3px_22px_rgba(0,0,0,0.7)]">
+          <h1 className="max-w-4xl font-display text-3xl sm:text-5xl leading-[1.08] md:text-8xl text-foreground tracking-tight">
             <TextReveal text={hero.title} delay={0.1} />
           </h1>
 
@@ -594,7 +550,7 @@ function HomeContent() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.5 }}
-              className="mt-6 max-w-xl text-base text-[#f7eee3]/90 md:text-lg leading-relaxed font-light drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]"
+              className="mt-6 max-w-xl text-base text-foreground/90 md:text-lg leading-relaxed font-light"
             >
               {hero.subtitle}
             </motion.p>
