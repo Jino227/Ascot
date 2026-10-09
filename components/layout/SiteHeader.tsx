@@ -61,7 +61,7 @@ export function SiteHeader() {
             <img
               src="/logo.png"
               alt="Ascotex Fashions"
-              className="h-9 sm:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              className="h-12 sm:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
             />
           </Link>
 

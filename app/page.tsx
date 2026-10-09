@@ -269,13 +269,13 @@ function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   if (slides.length === 0) return null;
 
   return (
-    <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
+    <div className="relative w-full overflow-hidden sm:absolute sm:inset-0">
       <AnimatePresence initial={false}>
         {slides.map((slide, idx) =>
           idx === active ? (
             <div
               key={`${slide.url}-${idx}`}
-              className="absolute inset-0"
+              className="relative w-full sm:absolute sm:inset-0"
             >
               {slide.type === "video" ? (
                 <video
@@ -284,14 +284,14 @@ function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                   muted
                   loop
                   playsInline
-                  className="h-full w-full object-cover"
+                  className="block aspect-video w-full object-contain sm:h-full sm:aspect-auto sm:object-cover"
                 />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={slide.url}
                   alt={slide.alt ?? "Ascotex Heritage"}
-                  className="h-full w-full object-cover"
+                  className="block h-auto w-full object-contain sm:h-full sm:object-cover"
                 />
               )}
             </div>
@@ -474,10 +474,10 @@ function HomeContent() {
         ref={heroRef}
         onMouseMove={onHeroMouse}
         onMouseLeave={() => { mx.set(0); my.set(0); }}
-        className="alive-hero relative isolate min-h-screen flex items-center overflow-hidden py-12 md:py-20"
+        className="alive-hero relative isolate flex min-h-screen flex-col items-center overflow-hidden py-0 sm:justify-center sm:py-12 md:py-20"
       >
         <motion.div
-          className="pointer-events-none absolute inset-0 z-0"
+          className="pointer-events-none relative z-0 w-full shrink-0 pt-20 sm:absolute sm:inset-0 sm:pt-0"
         >
           <HeroCarousel slides={heroSlides} />
         </motion.div>
@@ -517,7 +517,7 @@ function HomeContent() {
 
         <motion.div
           style={{ x: reducedMotion ? 0 : textX, y: reducedMotion ? 0 : textY }}
-          className="container-x relative z-10 pt-28 sm:pt-36 md:pt-44 lg:pt-48 pb-16 md:pb-24"
+          className="container-x relative z-10 w-full pt-10 pb-16 sm:pt-36 md:pt-44 md:pb-24 lg:pt-48"
         >
           <motion.div
             initial={{ opacity: 0, y: 30 }}
