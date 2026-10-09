@@ -26,7 +26,7 @@ export function SiteFooter() {
   const phone = footer.phone || contact.phone;
 
   return (
-    <footer className="relative border-t border-gold/20 bg-black overflow-hidden text-foreground">
+    <footer className="relative border-t border-gold/25 bg-ivory overflow-hidden text-foreground">
       {/* Scroll to Top Button */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}

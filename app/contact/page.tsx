@@ -96,7 +96,7 @@ export default function Contact() {
         {/* Right Column: Glass Inquiry Form */}
         <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
           <Tilt3DCard maxTilt={4} scaleOnHover={1.01}>
-            <form onSubmit={onSubmit} className="relative rounded-2xl border border-gold/30 bg-black/40 backdrop-blur-xl p-8 md:p-12 shadow-2xl overflow-hidden">
+            <form onSubmit={onSubmit} className="relative rounded-2xl border border-gold/30 bg-card/95 backdrop-blur-xl p-8 md:p-12 shadow-xl overflow-hidden">
               <div className="pointer-events-none absolute -top-24 -right-24 h-48 w-48 rounded-full bg-gold/15 blur-3xl" />
               <div className="pointer-events-none absolute -bottom-24 -left-24 h-48 w-48 rounded-full bg-gold-deep/10 blur-3xl" />
 

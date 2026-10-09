@@ -47,7 +47,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return (
       <div className="relative min-h-screen bg-background text-foreground flex items-center justify-center px-5">
         <Particles count={30} className="opacity-40 pointer-events-none" />
-        <div className="max-w-md w-full text-center rounded-2xl border border-gold/30 bg-black/40 backdrop-blur-xl p-8 shadow-2xl">
+        <div className="max-w-md w-full text-center rounded-2xl border border-gold/30 bg-card backdrop-blur-xl p-8 shadow-2xl">
           <Shield className="h-10 w-10 text-gold mx-auto mb-4" />
           <h1 className="font-display text-4xl text-foreground">Sign In Required</h1>
           <p className="mt-4 text-sm text-muted-foreground font-light">
@@ -62,7 +62,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return (
       <div className="relative min-h-screen bg-background text-foreground flex items-center justify-center px-5">
         <Particles count={30} className="opacity-40 pointer-events-none" />
-        <div className="max-w-md w-full text-center rounded-2xl border border-destructive/40 bg-black/40 backdrop-blur-xl p-8 shadow-2xl">
+        <div className="max-w-md w-full text-center rounded-2xl border border-destructive/40 bg-card backdrop-blur-xl p-8 shadow-2xl">
           <Shield className="h-10 w-10 text-destructive mx-auto mb-4" />
           <h1 className="font-display text-4xl text-foreground">Admin Access Required</h1>
           <p className="mt-4 text-sm text-muted-foreground font-light">Your account does not have admin privileges.</p>
@@ -72,7 +72,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden pt-32 pb-20">
+    <div className="dark relative min-h-screen bg-background text-foreground overflow-x-hidden pt-32 pb-20">
       {/* Ambient background glows */}
       <div className="absolute top-24 left-12 w-[28rem] h-[28rem] bg-gold/[0.07] rounded-full blur-3xl pointer-events-none animate-glow" />
       <div className="absolute bottom-24 right-12 w-[24rem] h-[24rem] bg-gold-deep/[0.06] rounded-full blur-3xl pointer-events-none animate-glow-slow" />

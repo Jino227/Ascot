@@ -63,7 +63,7 @@ export default function AuthPage() {
         className="w-full max-w-md relative z-10"
       >
         <Tilt3DCard maxTilt={5} scaleOnHover={1.01}>
-          <div className="relative rounded-2xl border border-gold/40 bg-black/60 backdrop-blur-2xl p-8 sm:p-12 shadow-2xl overflow-hidden">
+          <div className="relative rounded-2xl border border-gold/40 bg-card/95 backdrop-blur-2xl p-8 sm:p-12 shadow-2xl overflow-hidden">
             <div className="pointer-events-none absolute -top-20 -right-20 h-40 w-40 rounded-full bg-gold/15 blur-3xl" />
 
             <div className="mb-8 flex items-center gap-4">

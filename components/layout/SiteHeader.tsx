@@ -50,8 +50,8 @@ export function SiteHeader() {
         className={cn(
           "fixed inset-x-0 top-0 z-50 transition-all duration-300",
           scrolled || open
-            ? "bg-black/95 backdrop-blur-2xl border-b border-gold/30 shadow-[0_10px_35px_rgba(0,0,0,0.9)] py-2"
-            : "bg-black/80 backdrop-blur-xl border-b border-gold/20 shadow-[0_4px_20px_rgba(0,0,0,0.8)] py-2.5 sm:py-3"
+            ? "bg-ivory/95 backdrop-blur-2xl border-b border-gold/30 shadow-[0_10px_35px_rgba(53,38,14,0.12)] py-2"
+            : "bg-ivory/90 backdrop-blur-xl border-b border-gold/20 shadow-[0_4px_20px_rgba(53,38,14,0.08)] py-2.5 sm:py-3"
         )}
       >
         <div className="container-x flex h-14 sm:h-20 items-center justify-between">
@@ -66,7 +66,7 @@ export function SiteHeader() {
           </Link>
 
           {/* Desktop Navigation Pill Bar */}
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-2 bg-secondary/40 backdrop-blur-xl border border-gold/25 rounded-full px-4 py-1.5 shadow-inner">
+          <nav className="hidden lg:flex items-center gap-1 xl:gap-2 bg-white/55 backdrop-blur-xl border border-gold/25 rounded-full px-4 py-1.5 shadow-inner">
             {nav.map((n) => {
               const active = path === n.href || (n.href !== "/" && path.startsWith(n.href));
               return (
@@ -76,7 +76,7 @@ export function SiteHeader() {
                   className={cn(
                     "relative text-[11px] uppercase tracking-[0.2em] font-medium transition-all px-4 py-1.5 rounded-full",
                     active
-                      ? "text-gold font-semibold bg-gold/15 border border-gold/30 shadow-[0_0_15px_rgba(212,175,55,0.25)]"
+                      ? "text-black font-semibold bg-gold/20 border border-gold/35 shadow-[0_0_15px_rgba(212,175,55,0.18)]"
                       : "text-foreground/80 hover:text-gold hover:bg-gold/10"
                   )}
                 >
@@ -126,7 +126,7 @@ export function SiteHeader() {
 
           {/* Mobile Hamburger Button */}
           <button
-            className="lg:hidden p-2 relative z-50 rounded-full border border-gold/40 bg-black/60 text-gold hover:bg-gold hover:text-black transition-all shadow-[0_0_15px_rgba(212,175,55,0.25)]"
+            className="lg:hidden p-2 relative z-50 rounded-full border border-gold/40 bg-white/70 text-black hover:bg-gold hover:text-black transition-all shadow-[0_0_15px_rgba(212,175,55,0.16)]"
             aria-label="Toggle menu"
             onClick={() => setOpen((v) => !v)}
           >
@@ -138,7 +138,7 @@ export function SiteHeader() {
       {/* Mobile Drawer Menu Overlay (Rendered outside header to prevent backdrop-filter containing block trap) */}
       <div
         className={cn(
-          "fixed inset-0 z-40 flex flex-col bg-black/95 backdrop-blur-3xl transition-all duration-300 lg:hidden overflow-y-auto pt-24 sm:pt-28 pb-12 px-6 sm:px-12",
+          "fixed inset-0 z-40 flex flex-col bg-ivory/98 backdrop-blur-3xl transition-all duration-300 lg:hidden overflow-y-auto pt-24 sm:pt-28 pb-12 px-6 sm:px-12",
           open ? "pointer-events-auto opacity-100 scale-100" : "pointer-events-none opacity-0 scale-95"
         )}
       >
@@ -153,7 +153,7 @@ export function SiteHeader() {
                 className={cn(
                   "group flex items-center justify-between rounded-xl px-5 py-3.5 transition-all duration-300 border",
                   active
-                    ? "bg-gold/15 border-gold/40 text-gold font-medium shadow-[0_0_20px_rgba(212,175,55,0.2)]"
+                    ? "bg-gold/20 border-gold/40 text-black font-medium shadow-[0_0_20px_rgba(212,175,55,0.16)]"
                     : "border-border/30 text-foreground/85 hover:text-gold hover:bg-gold/10 hover:border-gold/30"
                 )}
               >

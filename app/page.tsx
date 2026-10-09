@@ -532,7 +532,7 @@ function HomeContent() {
           className="absolute right-[8%] top-[24%] z-20 hidden lg:block"
           delay={0.3}
         >
-          <div className="px-7 py-5 text-center backdrop-blur-md bg-black/30 border border-gold/30 rounded-xl shadow-2xl">
+          <div className="px-7 py-5 text-center backdrop-blur-md bg-ivory/85 border border-gold/30 rounded-xl shadow-2xl">
             <Gem className="mx-auto h-5 w-5 text-gold animate-pulse" />
             <div className="mt-2 font-display text-3xl text-gradient-gold">
               20+
@@ -548,7 +548,7 @@ function HomeContent() {
           className="absolute right-[18%] bottom-[20%] z-20 hidden lg:block"
           delay={0.6}
         >
-          <div className="px-7 py-5 text-center backdrop-blur-md bg-black/30 border border-gold/30 rounded-xl shadow-2xl">
+          <div className="px-7 py-5 text-center backdrop-blur-md bg-ivory/85 border border-gold/30 rounded-xl shadow-2xl">
             <Crown className="mx-auto h-5 w-5 text-gold" />
             <div className="mt-2 font-display text-3xl text-gradient-gold">
               10,000+
@@ -750,7 +750,7 @@ function HomeContent() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.65, delay: 0.08 }}
-              className="mx-auto mb-12 max-w-4xl rounded-2xl border border-white/10 bg-black/45 px-6 py-8 text-center shadow-xl backdrop-blur-sm sm:mb-16 sm:px-10 sm:py-10"
+              className="mx-auto mb-12 max-w-4xl rounded-2xl border border-border/70 bg-card/95 px-6 py-8 text-center shadow-xl backdrop-blur-sm sm:mb-16 sm:px-10 sm:py-10"
             >
               <span aria-hidden="true" className="font-display text-4xl leading-none text-gold/55">&ldquo;</span>
               <div className="mt-2 whitespace-pre-wrap text-base leading-[1.9] text-foreground/85 font-light sm:text-lg md:text-xl">
@@ -846,10 +846,10 @@ function HomeContent() {
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent transition-opacity duration-500" />
                     <div className="absolute bottom-5 left-5 right-5">
-                      <span className="font-display text-3xl text-gold font-light block mb-1">
+                      <span className="font-display text-3xl text-[#e6c98c] font-light block mb-1">
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      <h3 className="font-display text-lg text-foreground font-normal">
+                      <h3 className="font-display text-lg text-white font-normal">
                         {step.title}
                       </h3>
                     </div>

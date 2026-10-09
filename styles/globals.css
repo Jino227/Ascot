@@ -89,13 +89,51 @@
 }
 
 /* ══════════════════════════════════════════════════════════════
-   PREMIUM DARK-LUXURY GRADE
-   Espresso ink backgrounds · champagne gold accents · warm ivory type
+   IVORY ATELIER THEME
+   Warm ivory surfaces · near-black type · refined gold accents
    ══════════════════════════════════════════════════════════════ */
 :root {
   --radius: 0.25rem;
-  --background: oklch(0.155 0.012 55);
-  --foreground: oklch(0.93 0.02 88);
+  --background: oklch(0.965 0.018 85);
+  --foreground: oklch(0.19 0.014 55);
+  --ivory: oklch(0.965 0.018 85);
+  --champagne: oklch(0.53 0.085 72);
+  --espresso: oklch(0.94 0.022 82);
+  --charcoal: oklch(0.91 0.025 78);
+  --ink: oklch(0.975 0.012 85);
+  --brass: oklch(0.56 0.105 72);
+  --gold: oklch(0.61 0.12 75);
+  --gold-deep: oklch(0.49 0.105 70);
+  --card: oklch(0.99 0.008 85);
+  --card-foreground: oklch(0.19 0.014 55);
+  --popover: oklch(0.99 0.008 85);
+  --popover-foreground: oklch(0.19 0.014 55);
+  --primary: oklch(0.19 0.014 55);
+  --primary-foreground: oklch(0.97 0.012 85);
+  --secondary: oklch(0.93 0.025 82);
+  --secondary-foreground: oklch(0.19 0.014 55);
+  --muted: oklch(0.93 0.02 82);
+  --muted-foreground: oklch(0.47 0.018 65);
+  --accent: oklch(0.66 0.12 75);
+  --accent-foreground: oklch(0.16 0.012 55);
+  --destructive: oklch(0.58 0.19 27);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.83 0.028 75);
+  --input: oklch(0.7 0.05 72 / 0.5);
+  --ring: oklch(0.61 0.12 75);
+  --sidebar: oklch(0.95 0.018 85);
+  --sidebar-foreground: oklch(0.19 0.014 55);
+  --sidebar-primary: oklch(0.61 0.12 75);
+  --sidebar-primary-foreground: oklch(0.16 0.012 55);
+  --sidebar-accent: oklch(0.91 0.025 78);
+  --sidebar-accent-foreground: oklch(0.19 0.014 55);
+  --sidebar-border: oklch(0.83 0.028 75);
+  --sidebar-ring: oklch(0.61 0.12 75);
+}
+
+.dark {
+  --background: oklch(0.145 0.012 55);
+  --foreground: oklch(0.94 0.02 88);
   --ivory: oklch(0.93 0.02 88);
   --champagne: oklch(0.86 0.045 82);
   --espresso: oklch(0.155 0.012 55);
@@ -104,36 +142,6 @@
   --brass: oklch(0.68 0.09 72);
   --gold: oklch(0.78 0.105 78);
   --gold-deep: oklch(0.62 0.10 74);
-  --card: oklch(0.195 0.014 55);
-  --card-foreground: oklch(0.93 0.02 88);
-  --popover: oklch(0.2 0.014 55);
-  --popover-foreground: oklch(0.93 0.02 88);
-  --primary: oklch(0.93 0.02 88);
-  --primary-foreground: oklch(0.17 0.012 55);
-  --secondary: oklch(0.24 0.014 55);
-  --secondary-foreground: oklch(0.93 0.02 88);
-  --muted: oklch(0.24 0.014 55);
-  --muted-foreground: oklch(0.68 0.02 82);
-  --accent: oklch(0.78 0.105 78);
-  --accent-foreground: oklch(0.155 0.012 55);
-  --destructive: oklch(0.58 0.19 27);
-  --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.3 0.015 60);
-  --input: oklch(0.78 0.105 78 / 0.4);
-  --ring: oklch(0.78 0.105 78);
-  --sidebar: oklch(0.17 0.012 55);
-  --sidebar-foreground: oklch(0.93 0.02 88);
-  --sidebar-primary: oklch(0.78 0.105 78);
-  --sidebar-primary-foreground: oklch(0.155 0.012 55);
-  --sidebar-accent: oklch(0.24 0.014 55);
-  --sidebar-accent-foreground: oklch(0.93 0.02 88);
-  --sidebar-border: oklch(0.28 0.014 60);
-  --sidebar-ring: oklch(0.78 0.105 78);
-}
-
-.dark {
-  --background: oklch(0.145 0.012 55);
-  --foreground: oklch(0.94 0.02 88);
   --card: oklch(0.19 0.014 55);
   --card-foreground: oklch(0.94 0.02 88);
   --popover: oklch(0.195 0.014 55);
@@ -167,19 +175,19 @@
   ::selection { background: color-mix(in oklab, var(--accent) 45%, transparent); color: var(--espresso); }
 
   ::-webkit-scrollbar { width: 10px; }
-  ::-webkit-scrollbar-track { background: var(--ink); }
-  ::-webkit-scrollbar-thumb { background: color-mix(in oklab, var(--accent) 40%, var(--espresso)); border-radius: 5px; }
+  ::-webkit-scrollbar-track { background: var(--background); }
+  ::-webkit-scrollbar-thumb { background: color-mix(in oklab, var(--accent) 50%, var(--background)); border-radius: 5px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-  /* ── Autofill Dark Override (Prevents browser white inputs on autofill) ── */
+  /* ── Autofill Override ── */
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active,
   textarea:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px #161210 inset !important;
-    -webkit-text-fill-color: #f2e9dc !important;
-    caret-color: #f2e9dc !important;
+    -webkit-box-shadow: 0 0 0 1000px #fffdf8 inset !important;
+    -webkit-text-fill-color: #211d17 !important;
+    caret-color: #211d17 !important;
   }
 }
 
@@ -340,5 +348,6 @@
       radial-gradient(60% 50% at 15% 10%, color-mix(in oklab, var(--gold) 12%, transparent) 0%, transparent 60%),
       radial-gradient(50% 40% at 90% 15%, color-mix(in oklab, var(--brass) 10%, transparent) 0%, transparent 55%),
       radial-gradient(70% 60% at 50% 100%, color-mix(in oklab, var(--gold-deep) 9%, transparent) 0%, transparent 60%);
+    background-color: var(--background);
   }
 }
