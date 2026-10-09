@@ -284,14 +284,14 @@ function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                   muted
                   loop
                   playsInline
-                  className="h-full w-full object-contain"
+                  className="h-full w-full object-cover"
                 />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={slide.url}
                   alt={slide.alt ?? "Ascotex Heritage"}
-                  className="h-full w-full object-contain"
+                  className="h-full w-full object-cover"
                 />
               )}
             </div>
