@@ -14,7 +14,7 @@ export function PageLoader() {
           <div className="absolute inset-0 border-t-2 border-gold rounded-full animate-spin" style={{ animationDuration: "1.5s" }} />
           <div className="absolute inset-2 border-r-2 border-gold/50 rounded-full animate-spin" style={{ animationDuration: "2s", animationDirection: "reverse" }} />
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Ascotex" className="absolute inset-0 m-auto h-8 object-contain" style={{ mixBlendMode: "screen" }} />
+          <img src="/logo.png" alt="Ascotex" className="absolute inset-0 m-auto h-8 scale-y-125 object-contain" style={{ mixBlendMode: "screen" }} />
         </div>
         <div className="text-[10px] uppercase tracking-[0.4em] text-gold/70 font-light">Loading Atelier</div>
       </motion.div>
