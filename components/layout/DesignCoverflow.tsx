@@ -10,12 +10,10 @@ export function DesignCoverflow({
   images,
   onOpen,
   className = "",
-  imageMotion = "none",
 }: {
   images: CoverflowImage[];
   onOpen: (url: string, index: number) => void;
   className?: string;
-  imageMotion?: "none" | "editorial-float";
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -44,25 +42,29 @@ export function DesignCoverflow({
               onClick={() => offset === 0 ? onOpen(image.url, index) : setActiveIndex(index)}
               className="absolute h-[280px] w-[min(72vw,340px)] overflow-hidden rounded-2xl border border-gold/30 bg-black shadow-[0_20px_65px_rgba(0,0,0,0.55)] outline-none transition-colors focus-visible:border-gold focus-visible:ring-2 focus-visible:ring-gold/70 sm:h-[370px] sm:w-[min(58vw,400px)]"
               initial={false}
-              animate={{
+              animate={isVisible ? {
                 x: `${offset * 64}%`,
                 scale: offset === 0 ? 1 : Math.max(0.72, 0.86 - Math.abs(offset) * 0.045),
                 rotateY: offset * -32,
-                opacity: isVisible ? (offset === 0 ? 1 : 0.52 / Math.abs(offset)) : 0,
+                opacity: offset === 0 ? 1 : 0.52 / Math.abs(offset),
                 zIndex: 10 - Math.abs(offset),
-                filter: offset === 0 ? "brightness(1)" : "brightness(0.68)",
+              } : { opacity: 0, zIndex: -1 }}
+              transition={isVisible
+                ? { type: "spring", stiffness: 320, damping: 32, mass: 0.7 }
+                : { duration: 0.12 }}
+              style={{
+                transformStyle: "preserve-3d",
+                pointerEvents: isVisible ? "auto" : "none",
+                willChange: isVisible ? "transform, opacity" : undefined,
               }}
-              transition={{ type: "spring", stiffness: 190, damping: 25 }}
-              style={{ transformStyle: "preserve-3d", pointerEvents: isVisible ? "auto" : "none" }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <motion.img
+              <img
                 src={image.url}
                 alt={image.alt ?? "Ascotex Design"}
                 className="h-full w-full object-contain"
-                loading="lazy"
-                animate={imageMotion === "editorial-float" ? { scale: [1, 1.025, 1], y: [0, -5, 0] } : undefined}
-                transition={imageMotion === "editorial-float" ? { duration: 7, repeat: Infinity, ease: "easeInOut" } : undefined}
+                loading={Math.abs(offset) <= 1 ? "eager" : "lazy"}
+                decoding="async"
               />
               <span className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-black/90 via-black/35 to-transparent px-5 pb-4 pt-12 text-white">
                 <span className="text-[10px] uppercase tracking-[0.28em] text-white/75">{String(index + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}</span>
