@@ -3,7 +3,8 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { getWebsiteContent, upsertContent, uploadHeroMedia } from "@/lib/actions";
+import { getWebsiteContent, upsertContent } from "@/lib/actions";
+import { uploadClientMedia } from "@/lib/client-media-upload";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -111,9 +112,7 @@ function HeroEditor({ initial, onSave }: { initial: HeroContent; onSave: (data: 
     setUploading(true);
     try {
       for (const file of Array.from(files)) {
-        const fd = new FormData();
-        fd.append("file", file);
-        const { url } = await uploadHeroMedia(user.id, fd);
+        const url = await uploadClientMedia(file, "hero");
         const type: HeroSlide["type"] = file.type.startsWith("video/") ? "video" : "image";
         setHero((h) => ({ ...h, slides: [...h.slides, { type, url, alt: "" }] }));
       }
@@ -465,9 +464,7 @@ function OurStoryEditor({ initial, onSave }: { initial: OurStoryContent; onSave:
     if (!file || !user) return;
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const { url } = await uploadHeroMedia(user.id, formData);
+      const url = await uploadClientMedia(file, "our-story");
       setStory((current) => ({ ...current, images: [...(current.images ?? []), { url, alt: "" }] }));
       toast.success("Story image uploaded");
     } catch (error: any) {
@@ -767,9 +764,7 @@ function AboutPageEditor({ initial, onSave }: { initial: AboutPageContent; onSav
     if (!file || !user) return;
     setUploading(true);
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const { url } = await uploadHeroMedia(user.id, fd);
+      const url = await uploadClientMedia(file, "infrastructure");
       updateFacility(idx, "image", url);
       toast.success("Infrastructure photo uploaded");
     } catch (err: any) {

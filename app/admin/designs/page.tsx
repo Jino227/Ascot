@@ -3,7 +3,8 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { getDesignsAdmin, upsertDesign, deleteDesign, uploadDesignImage } from "@/lib/actions";
+import { getDesignsAdmin, upsertDesign, deleteDesign } from "@/lib/actions";
+import { uploadClientMedia } from "@/lib/client-media-upload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -28,9 +29,7 @@ export default function AdminDesigns() {
     if (!file) return;
     setUploading(true);
     try {
-      const form = new FormData();
-      form.append("file", file);
-      const { url } = await uploadDesignImage(user!.id, form);
+      const url = await uploadClientMedia(file, "designs");
       
       await upsertDesign(user!.id, {
         url,

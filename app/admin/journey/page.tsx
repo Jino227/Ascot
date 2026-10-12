@@ -3,7 +3,8 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { deleteJourneyStep, getJourneyStepsAdmin, upsertJourneyStep, uploadJourneyImage } from "@/lib/actions";
+import { deleteJourneyStep, getJourneyStepsAdmin, upsertJourneyStep } from "@/lib/actions";
+import { uploadClientMedia } from "@/lib/client-media-upload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,9 +28,7 @@ export default function AdminJourney() {
     if (!file) return;
     setUploading(true);
     try {
-      const form = new FormData();
-      form.append("file", file);
-      const { url } = await uploadJourneyImage(user!.id, form);
+      const url = await uploadClientMedia(file, "journey");
       
       await upsertJourneyStep(user!.id, {
         title: "Journey Image",
